@@ -1,5 +1,10 @@
 export const stonesList = [
-  { id: 1, imgSrc: "/stones/eye-stone.png", staked: false, tier: "highest" },
+  {
+    id: 1,
+    imgSrc: "/stones/eye-stone.png",
+    staked: false,
+    tier: "highest",
+  },
   {
     id: 2,
     imgSrc: "/stones/GenesisStone3x.png",

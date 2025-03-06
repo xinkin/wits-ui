@@ -5,21 +5,33 @@ import { Stone } from "../types";
 import "./globals.css";
 import { CircleX } from "lucide-react";
 import { stonesList } from "@/constants";
+import SeperatorSVG from "../../public/seperator.svg";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
   const [points] = useState<string>("0000");
   const [multiplier] = useState<string>("0000");
-  const [unstakedCount, setUnstakedCount] = useState<number>(9);
+  const [unstakedCount, setUnstakedCount] = useState<number>(stonesList.length);
   const [stakedCount, setStakedCount] = useState<number>(0);
-  const [stones, setStones] = useState<Stone[]>(stonesList as Stone[]);
+  const [stones, setStones] = useState<Stone[]>(
+    (stonesList as Stone[]).map((stone: Stone) => ({
+      ...stone,
+      selected: false,
+    })),
+  );
 
   const handleSelectStone = (stoneId: number): void => {
     setStones((prevStones) =>
-      prevStones.map((stone) => ({
-        ...stone,
-        selected: stone.id === stoneId ? !stone.selected : stone.selected,
-      })),
+      prevStones.map((stone) => {
+        const newSelected =
+          stone.id === stoneId ? !stone.selected : stone.selected;
+        if (stone.id === stoneId) {
+        }
+        return {
+          ...stone,
+          selected: newSelected,
+        };
+      }),
     );
   };
 
@@ -29,63 +41,47 @@ export default function Home() {
 
     if (selectedStones.length === 0) return;
 
-    // Find highest tier stone among selected
-    const tiers: Record<Stone["tier"], number> = {
-      highest: 4,
-      epic: 3,
-      rare: 2,
-      common: 1,
-    };
-
-    const highestTierStone = selectedStones.reduce(
-      (highest, current) =>
-        tiers[current.tier] > tiers[highest.tier] ? current : highest,
-      selectedStones[0],
-    );
-
-    // Update only the highest tier stone to staked
+    // Update all selected stones to staked
     setStones((prevStones) =>
       prevStones.map((stone) => ({
         ...stone,
-        staked: stone.id === highestTierStone.id ? true : stone.staked,
+        staked: stone.selected ? true : stone.staked,
         selected: false, // Deselect all stones
       })),
     );
 
-    // Update counts
-    setUnstakedCount((prev) => prev - 1);
-    setStakedCount((prev) => prev + 1);
+    // Update counts with the total number of selected stones
+    setUnstakedCount((prev) => prev - selectedStones.length);
+    setStakedCount((prev) => prev + selectedStones.length);
   };
 
   const handleSelectAll = (): void => {
     setStones((prevStones) =>
       prevStones.map((stone) => ({
         ...stone,
-        selected: !stone.staked, // Select all unstaked stones
+        selected: !stone.staked,
       })),
     );
   };
 
-  // Get the highest stone
   const highestStone = stones.find((stone) => stone.tier === "highest");
 
-  // Get all other stones
   const otherStones = stones.filter((stone) => stone.tier !== "highest");
 
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">
-      <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col items-stretch">
+      <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <div className="text-gold_dark">CONNECT WALLET</div>
+          <div className="text-light_gold">CONNECT WALLET</div>
           <div className="items-center cursor-pointer">
             <CircleX size={38} color="#C0883A" strokeWidth={0.75} />
           </div>
         </div>
 
         {/* Title */}
-        <div className="relative mb-6">
-          <h1 className="text-[44px] text-center text-gold">
+        <div className="relative mb-32">
+          <h1 className="text-[36px] text-center text-gold tracking-wider">
             SEASON 0 MULTIPLIER PAGE
           </h1>
           <p className="text-center text-[16px] font-lato text-offwhite">
@@ -110,9 +106,11 @@ export default function Home() {
 
         {/* Status and Actions */}
         <div className="flex justify-between items-center">
-          <div className="text-2xl">
+          <div className="text-2xl flex items-center">
             <span className="text-gold_dark">UNSTAKED {unstakedCount}</span>
-            <span className="text-gray-600 mx-2">|</span>
+            <span className="mx-3">
+              <SeperatorSVG />
+            </span>
             <span className="text-grey">STAKED {stakedCount}</span>
           </div>
 
@@ -121,7 +119,9 @@ export default function Home() {
             <button
               className="relative px-14 py-2"
               style={{
-                backgroundImage: "url('/buttonglow.png')",
+                backgroundImage: stones.some((stone) => stone.selected)
+                  ? "url('/activatedButton.png')"
+                  : "url('/buttonglow.png')",
                 backgroundSize: "100% 100%",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -142,10 +142,12 @@ export default function Home() {
             <div
               className="w-[404px] h-[404px] flex-shrink-0 relative"
               style={{
-                backgroundImage: `url('/Smoke.png'), url('/Outline.png')`,
+                backgroundImage: highestStone.selected
+                  ? `url('/Smoke.png'), url('/activeOutline.png')`
+                  : `url('/Smoke.png'), url('/Outline1.png')`,
                 backgroundSize: "387px 387px, 404px 404px",
-                backgroundRepeat: "no-repeat, no-repeat",
                 backgroundPosition: "center, center",
+                backgroundRepeat: "no-repeat, no-repeat",
               }}
             >
               <div
@@ -172,12 +174,16 @@ export default function Home() {
               {otherStones.map((stone) => (
                 <div
                   key={stone.id}
-                  className={`stone-item relative w-[188px] h-[188px] ${
+                  className={`relative w-[188px] h-[188px] ${
                     stone.selected ? "selected" : ""
                   }`}
                   style={{
-                    backgroundImage: `url('/Smoke.png'), url('/Outline1.png')`,
-                    backgroundSize: "180px 180px, 188px 188px",
+                    backgroundImage: stone.selected
+                      ? `url('/Smoke.png'), url('/activeOutline.png')`
+                      : `url('/Smoke.png'), url('/Outline1.png')`,
+                    backgroundSize: stone.selected
+                      ? "180px 180px, 188px 188px"
+                      : "180px 180px, 188px 188px",
                     backgroundPosition: "center, center",
                     backgroundRepeat: "no-repeat, no-repeat",
                   }}
