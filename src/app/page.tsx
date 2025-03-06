@@ -6,6 +6,7 @@ import "./globals.css";
 import { CircleX } from "lucide-react";
 import { stonesList } from "@/constants";
 import SeperatorSVG from "../../public/seperator.svg";
+import StakingModal from "@/components/Modal";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
@@ -19,6 +20,7 @@ export default function Home() {
       selected: false,
     })),
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSelectStone = (stoneId: number): void => {
     setStones((prevStones) =>
@@ -36,6 +38,7 @@ export default function Home() {
   };
 
   const handleStake = (): void => {
+    setIsModalOpen(true);
     // Find selected stones
     const selectedStones = stones.filter((stone) => stone.selected);
 
@@ -90,7 +93,7 @@ export default function Home() {
         </div>
 
         {/* User Stats */}
-        <div className="bg-background rounded-md p-4 mb-8 w-[350px] border-border border-2 text-sm">
+        <div className="bg-dark_purple rounded-md p-4 mb-8 w-[350px] border-border border-2 text-sm">
           <p className="mb-4 text-gold">{username}</p>
           <div className="space-y-1">
             <div className="flex items-center text-offwhite">
@@ -103,6 +106,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <StakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
 
         {/* Status and Actions */}
         <div className="flex justify-between items-center">
