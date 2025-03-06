@@ -1,21 +1,23 @@
+@font-face {
+  font-family: 'BeaufortPro';
+  src: url('/fonts/BeaufortPro-regular.otf') format('woff2');
+  /* url('/fonts/beautfortPro.woff') format('woff'); */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* app/globals.css */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  --dark-bg: #08080A;
+  --gold: #FFD700;
+  --text-light: #ffffff;
+  --text-muted: #aaaaaa;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }

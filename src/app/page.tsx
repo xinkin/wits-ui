@@ -1,101 +1,189 @@
+// app/page.tsx
+"use client";
+import { useState } from "react";
 import Image from "next/image";
+import { Stone } from "../types";
+import "./globals.css";
+import { CircleX } from "lucide-react";
+import { stonesList } from "@/constants";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [username] = useState<string>("USERNAME");
+  const [points] = useState<string>("0000");
+  const [multiplier] = useState<string>("0000");
+  const [unstakedCount, setUnstakedCount] = useState<number>(9);
+  const [stakedCount, setStakedCount] = useState<number>(0);
+  const [stones, setStones] = useState<Stone[]>(stonesList as Stone[]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSelectStone = (stoneId: number): void => {
+    setStones((prevStones) =>
+      prevStones.map((stone) => ({
+        ...stone,
+        selected: stone.id === stoneId ? !stone.selected : stone.selected,
+      })),
+    );
+  };
+
+  const handleStake = (): void => {
+    // Find selected stones
+    const selectedStones = stones.filter((stone) => stone.selected);
+
+    if (selectedStones.length === 0) return;
+
+    // Find highest tier stone among selected
+    const tiers: Record<Stone["tier"], number> = {
+      highest: 4,
+      epic: 3,
+      rare: 2,
+      common: 1,
+    };
+
+    const highestTierStone = selectedStones.reduce(
+      (highest, current) =>
+        tiers[current.tier] > tiers[highest.tier] ? current : highest,
+      selectedStones[0],
+    );
+
+    // Update only the highest tier stone to staked
+    setStones((prevStones) =>
+      prevStones.map((stone) => ({
+        ...stone,
+        staked: stone.id === highestTierStone.id ? true : stone.staked,
+        selected: false, // Deselect all stones
+      })),
+    );
+
+    // Update counts
+    setUnstakedCount((prev) => prev - 1);
+    setStakedCount((prev) => prev + 1);
+  };
+
+  const handleSelectAll = (): void => {
+    setStones((prevStones) =>
+      prevStones.map((stone) => ({
+        ...stone,
+        selected: !stone.staked, // Select all unstaked stones
+      })),
+    );
+  };
+
+  // Get the highest stone
+  const highestStone = stones.find((stone) => stone.tier === "highest");
+
+  // Get all other stones
+  const otherStones = stones.filter((stone) => stone.tier !== "highest");
+
+  return (
+    <main className="min-h-screen w-full flex justify-center items-center p-2">
+      <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col items-stretch">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div className="text-gold_dark">CONNECT WALLET</div>
+          <div className="items-center cursor-pointer">
+            <CircleX size={38} color="#C0883A" strokeWidth={0.75} />
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <div className="relative mb-6">
+          <h1 className="text-[44px] text-center text-gold">
+            SEASON 0 MULTIPLIER PAGE
+          </h1>
+          <p className="text-center text-[16px] font-lato text-offwhite">
+            Stake your Stones to Earn your Multiplier and additional Points!
+          </p>
+        </div>
+
+        {/* User Stats */}
+        <div className="bg-[#08060A] rounded-md p-4 mb-8 w-[345px] border-[#313030] border-2">
+          <p className="text-lg mb-4 text-gold">{username}</p>
+          <div className="space-y-1">
+            <div className="flex items-center text-offwhite">
+              <span>POINTS:</span>
+              <span className="text-[#D8D7D5] ml-2">{points}</span>
+            </div>
+            <div className="flex items-center">
+              <span>MULTIPLIER:</span>
+              <span className="text-[#D8D7D5] ml-2">{multiplier}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Status and Actions */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="text-xl">
+            <span className="text-gold_dark">UNSTAKED {unstakedCount}</span>
+            <span className="text-gray-600 mx-2">|</span>
+            <span className="text-gray-600">STAKED {stakedCount}</span>
+          </div>
+
+          <div className="flex gap-4 text-gold_dark">
+            <button className="btn-outline" onClick={handleSelectAll}>
+              SELECT ALL
+            </button>
+            <button className="btn-filled" onClick={handleStake}>
+              STAKE
+            </button>
+          </div>
+        </div>
+
+        {/* Stone Grid */}
+        <div className="flex gap-6">
+          {/* Highest Stone */}
+          {highestStone && (
+            <div
+              className="w-[404px] h-[404px] flex-shrink-0 relative"
+              style={{
+                backgroundImage: `url('/Smoke.png'), url('/Outline.png')`,
+                backgroundSize: "387px 387px, 404px 404px",
+                backgroundRepeat: "no-repeat, no-repeat",
+                backgroundPosition: "center, center",
+              }}
+            >
+              <div
+                className="h-full flex flex-col items-center justify-center"
+                onClick={() => handleSelectStone(highestStone.id)}
+              >
+                <Image
+                  src={highestStone.imgSrc}
+                  alt="Highest Stone"
+                  width={330}
+                  height={330}
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                />
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-xs text-grey">
+                  YOUR HIGHEST STONE
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Other Stones */}
+          <div className="flex-1 grid grid-cols-4 gap-7">
+            {otherStones.map((stone) => (
+              <div
+                key={stone.id}
+                className={`stone-item relative w-[188px] h-[188px] ${
+                  stone.selected ? "selected" : ""
+                }`}
+                style={{
+                  backgroundImage: `url('/Smoke.png'), url('/Outline1.png')`,
+                  backgroundSize: "180px 180px, 188px 188px",
+                  backgroundPosition: "center, center",
+                  backgroundRepeat: "no-repeat, no-repeat",
+                }}
+                onClick={() => handleSelectStone(stone.id)}
+              >
+                <Image
+                  src={stone.imgSrc}
+                  alt={`Stone ${stone.id}`}
+                  width={124}
+                  height={124}
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
