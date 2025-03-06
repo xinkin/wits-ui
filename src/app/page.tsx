@@ -38,24 +38,13 @@ export default function Home() {
   };
 
   const handleStake = (): void => {
-    setIsModalOpen(true);
-    // Find selected stones
     const selectedStones = stones.filter((stone) => stone.selected);
-
     if (selectedStones.length === 0) return;
 
-    // Update all selected stones to staked
-    setStones((prevStones) =>
-      prevStones.map((stone) => ({
-        ...stone,
-        staked: stone.selected ? true : stone.staked,
-        selected: false, // Deselect all stones
-      })),
-    );
+    setIsModalOpen(true);
 
-    // Update counts with the total number of selected stones
-    setUnstakedCount((prev) => prev - selectedStones.length);
-    setStakedCount((prev) => prev + selectedStones.length);
+    // Move the stone staking logic to after modal confirmation
+    // We'll keep the selected stones in their selected state until confirmed
   };
 
   const handleSelectAll = (): void => {
@@ -107,7 +96,30 @@ export default function Home() {
           </div>
         </div>
 
-        <StakingModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+        <StakingModal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          selectedStones={stones.filter((stone) => stone.selected)}
+          onConfirm={() => {
+            // Move the staking logic here
+            setStones((prevStones) =>
+              prevStones.map((stone) => ({
+                ...stone,
+                staked: stone.selected ? true : stone.staked,
+                selected: false, // Deselect all stones
+              })),
+            );
+
+            // Update counts
+            const selectedCount = stones.filter(
+              (stone) => stone.selected,
+            ).length;
+            setUnstakedCount((prev) => prev - selectedCount);
+            setStakedCount((prev) => prev + selectedCount);
+
+            setIsModalOpen(false);
+          }}
+        />
 
         {/* Status and Actions */}
         <div className="flex justify-between items-center">
@@ -149,7 +161,7 @@ export default function Home() {
               style={{
                 backgroundImage: highestStone.selected
                   ? `url('/Smoke.png'), url('/activeOutline.png')`
-                  : `url('/Smoke.png'), url('/Outline1.png')`,
+                  : `url('/Smoke.png'), url('/Outline.png')`,
                 backgroundSize: "387px 387px, 404px 404px",
                 backgroundPosition: "center, center",
                 backgroundRepeat: "no-repeat, no-repeat",

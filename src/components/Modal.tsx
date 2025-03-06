@@ -9,14 +9,22 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import StrokeSVG from "../../public/Stroke.svg";
+import { Stone } from "@/types";
+import StoneDisplay from "@/components/StoneDisplay";
+
+interface StakingModalProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  selectedStones: Stone[];
+  onConfirm: () => void;
+}
 
 export default function StakingModal({
   isOpen,
   setIsOpen,
-}: {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-}) {
+  selectedStones,
+  onConfirm,
+}: StakingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
@@ -31,18 +39,25 @@ export default function StakingModal({
             backgroundPosition: "center",
           }}
         >
-          <DialogTitle className="text-[32px] text-center text-gold tracking-wider">
+          <DialogTitle className="text-[36px] text-center text-gold tracking-wider mb-2">
             CONFIRM YOUR STAKING
           </DialogTitle>
           <StrokeSVG />
 
-          <div className="relative z-10 w-[120px] h-[120px] mb-8 bg-black border border-purple-700 overflow-hidden">
-            <div className="absolute inset-0 bg-purple-900/30"></div>
+          <div className="flex gap-6 mt-11">
+            {selectedStones.map((stone) => (
+              <StoneDisplay
+                key={stone.id}
+                stoneSrc={stone.imgSrc}
+                stoneAlt={`Stone ${stone.id}`}
+              />
+            ))}
           </div>
 
           {/* Stake Button */}
           <button
-            className="relative w-[266px] h-[44px] text-light_gold text-base"
+            onClick={onConfirm}
+            className="relative w-[266px] h-[44px] text-light_gold text-base mt-14"
             style={{
               backgroundImage: "url('/activatedButton.png')",
               backgroundSize: "100% 100%",
