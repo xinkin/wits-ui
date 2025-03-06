@@ -1,7 +1,6 @@
 @font-face {
   font-family: 'BeaufortPro';
   src: url('/fonts/BeaufortPro-regular.otf') format('woff2');
-  /* url('/fonts/beautfortPro.woff') format('woff'); */
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11,7 +10,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* app/globals.css */
 :root {
   --dark-bg: #08080A;
   --gold: #FFD700;
@@ -20,4 +18,28 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 0, 0, 0;
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #996726;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a97731;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #996726 transparent;
 }

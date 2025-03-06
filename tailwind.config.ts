@@ -9,11 +9,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        border: "#313030",
         gold: "#FFE7A6",
+        light_gold: "#FCC970",
+        grey_text: "#D8D7D5",
         offwhite: "#FFFCF2",
         grey: "#4D4D4D",
         gold_dark: "#C0883A",
-        background: "var(--background)",
+        background: "#08060A",
         foreground: "var(--foreground)",
       },
       fontFamily: {

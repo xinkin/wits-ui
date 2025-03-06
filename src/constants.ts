@@ -48,4 +48,52 @@ export const stonesList = [
     staked: false,
     tier: "common",
   },
+  {
+    id: 10,
+    imgSrc: "/stones/GenesisStone10x.png",
+    staked: false,
+    tier: "epic",
+  },
+  {
+    id: 11,
+    imgSrc: "/stones/GenesisStone15x.png",
+    staked: false,
+    tier: "rare",
+  },
+  {
+    id: 12,
+    imgSrc: "/stones/GenesisStone5x.png",
+    staked: false,
+    tier: "common",
+  },
+  {
+    id: 13,
+    imgSrc: "/stones/GenesisStone7x.png",
+    staked: false,
+    tier: "rare",
+  },
+  {
+    id: 14,
+    imgSrc: "/stones/GenesisStone3x.png",
+    staked: false,
+    tier: "common",
+  },
+  {
+    id: 15,
+    imgSrc: "/stones/GenesisStone10x.png",
+    staked: false,
+    tier: "epic",
+  },
+  {
+    id: 16,
+    imgSrc: "/stones/GenesisStone15x.png",
+    staked: false,
+    tier: "rare",
+  },
+  {
+    id: 17,
+    imgSrc: "/stones/GenesisStone5x.png",
+    staked: false,
+    tier: "common",
+  },
 ];

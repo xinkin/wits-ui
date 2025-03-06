@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 import { useState } from "react";
 import Image from "next/image";
@@ -83,6 +82,8 @@ export default function Home() {
             <CircleX size={38} color="#C0883A" strokeWidth={0.75} />
           </div>
         </div>
+
+        {/* Title */}
         <div className="relative mb-6">
           <h1 className="text-[44px] text-center text-gold">
             SEASON 0 MULTIPLIER PAGE
@@ -93,37 +94,46 @@ export default function Home() {
         </div>
 
         {/* User Stats */}
-        <div className="bg-[#08060A] rounded-md p-4 mb-8 w-[345px] border-[#313030] border-2">
-          <p className="text-lg mb-4 text-gold">{username}</p>
+        <div className="bg-background rounded-md p-4 mb-8 w-[350px] border-border border-2 text-sm">
+          <p className="mb-4 text-gold">{username}</p>
           <div className="space-y-1">
             <div className="flex items-center text-offwhite">
               <span>POINTS:</span>
-              <span className="text-[#D8D7D5] ml-2">{points}</span>
+              <span className="text-grey_text ml-2">{points}</span>
             </div>
             <div className="flex items-center">
               <span>MULTIPLIER:</span>
-              <span className="text-[#D8D7D5] ml-2">{multiplier}</span>
+              <span className="text-grey_text ml-2">{multiplier}</span>
             </div>
           </div>
         </div>
 
         {/* Status and Actions */}
-        <div className="flex justify-between items-center mb-8">
-          <div className="text-xl">
+        <div className="flex justify-between items-center">
+          <div className="text-2xl">
             <span className="text-gold_dark">UNSTAKED {unstakedCount}</span>
             <span className="text-gray-600 mx-2">|</span>
-            <span className="text-gray-600">STAKED {stakedCount}</span>
+            <span className="text-grey">STAKED {stakedCount}</span>
           </div>
 
-          <div className="flex gap-4 text-gold_dark">
-            <button className="btn-outline" onClick={handleSelectAll}>
-              SELECT ALL
-            </button>
-            <button className="btn-filled" onClick={handleStake}>
+          <div className="flex gap-6 text-light_gold text-sm">
+            <button onClick={handleSelectAll}>SELECT ALL</button>
+            <button
+              className="relative px-14 py-2"
+              style={{
+                backgroundImage: "url('/buttonglow.png')",
+                backgroundSize: "100% 100%",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+              onClick={handleStake}
+            >
               STAKE
             </button>
           </div>
         </div>
+
+        <div className="h-px w-full bg-gold_dark mt-3 mb-14"></div>
 
         {/* Stone Grid */}
         <div className="flex gap-6">
@@ -157,30 +167,32 @@ export default function Home() {
           )}
 
           {/* Other Stones */}
-          <div className="flex-1 grid grid-cols-4 gap-7">
-            {otherStones.map((stone) => (
-              <div
-                key={stone.id}
-                className={`stone-item relative w-[188px] h-[188px] ${
-                  stone.selected ? "selected" : ""
-                }`}
-                style={{
-                  backgroundImage: `url('/Smoke.png'), url('/Outline1.png')`,
-                  backgroundSize: "180px 180px, 188px 188px",
-                  backgroundPosition: "center, center",
-                  backgroundRepeat: "no-repeat, no-repeat",
-                }}
-                onClick={() => handleSelectStone(stone.id)}
-              >
-                <Image
-                  src={stone.imgSrc}
-                  alt={`Stone ${stone.id}`}
-                  width={124}
-                  height={124}
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                />
-              </div>
-            ))}
+          <div className="flex-1 h-[404px] overflow-scroll pr-4 custom-scrollbar">
+            <div className="grid grid-cols-4 gap-7">
+              {otherStones.map((stone) => (
+                <div
+                  key={stone.id}
+                  className={`stone-item relative w-[188px] h-[188px] ${
+                    stone.selected ? "selected" : ""
+                  }`}
+                  style={{
+                    backgroundImage: `url('/Smoke.png'), url('/Outline1.png')`,
+                    backgroundSize: "180px 180px, 188px 188px",
+                    backgroundPosition: "center, center",
+                    backgroundRepeat: "no-repeat, no-repeat",
+                  }}
+                  onClick={() => handleSelectStone(stone.id)}
+                >
+                  <Image
+                    src={stone.imgSrc}
+                    alt={`Stone ${stone.id}`}
+                    width={124}
+                    height={124}
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
