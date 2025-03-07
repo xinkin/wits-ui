@@ -31,14 +31,7 @@ export default function StakingModal({
         className="p-0 border-none bg-transparent shadow-none font-beaufort"
         style={{ width: "906.178px", maxWidth: "100%" }}
       >
-        <div
-          className="relative flex flex-col items-center px-5 pt-10 pb-16 h-[495px]"
-          style={{
-            backgroundImage: "url('/modal-bg.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
+        <div className="relative flex flex-col items-center px-5 pt-10 pb-16 h-[495px] bg-modal-bg bg-cover bg-center">
           <DialogTitle className="text-[36px] text-center text-gold tracking-wider mb-2">
             CONFIRM YOUR STAKING
           </DialogTitle>
@@ -57,13 +50,7 @@ export default function StakingModal({
           {/* Stake Button */}
           <button
             onClick={onConfirm}
-            className="relative w-[266px] h-[44px] text-light_gold text-base mt-14"
-            style={{
-              backgroundImage: "url('/activatedButton.png')",
-              backgroundSize: "100% 100%",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
+            className="relative w-[266px] h-[44px] text-light_gold text-base mt-14 bg-activated-button bg-full bg-center bg-no-repeat"
           >
             STAKE
           </button>

@@ -12,15 +12,7 @@ export default function StoneDisplaySmall({
   stoneAlt = "Stone",
 }: StoneDisplayProps) {
   return (
-    <div
-      className="w-[188px] h-[188px] flex-shrink-0 relative"
-      style={{
-        backgroundImage: `url('/Smoke.png'), url('/Outline1.png')`,
-        backgroundSize: "180px 180px, 188px 188px",
-        backgroundPosition: "center, center",
-        backgroundRepeat: "no-repeat, no-repeat",
-      }}
-    >
+    <div className="w-[188px] h-[188px] flex-shrink-0 relative bg-smoke-outline1 bg-stone-sm bg-center bg-no-repeat">
       <div className="h-full flex flex-col items-center justify-center">
         <Image
           src={stoneSrc}

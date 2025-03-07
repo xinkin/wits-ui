@@ -22,6 +22,10 @@ export default function Home() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const areAllStonesSelected = (): boolean => {
+    return stones.every((stone) => stone.selected);
+  };
+
   const handleSelectStone = (stoneId: number): void => {
     setStones((prevStones) =>
       prevStones.map((stone) => {
@@ -48,10 +52,11 @@ export default function Home() {
   };
 
   const handleSelectAll = (): void => {
+    const allSelected = areAllStonesSelected();
     setStones((prevStones) =>
       prevStones.map((stone) => ({
         ...stone,
-        selected: !stone.staked,
+        selected: !allSelected,
       })),
     );
   };
@@ -132,17 +137,15 @@ export default function Home() {
           </div>
 
           <div className="flex gap-6 text-light_gold text-sm">
-            <button onClick={handleSelectAll}>SELECT ALL</button>
+            <button onClick={handleSelectAll}>
+              {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
+            </button>
             <button
-              className="relative px-14 py-2"
-              style={{
-                backgroundImage: stones.some((stone) => stone.selected)
-                  ? "url('/activatedButton.png')"
-                  : "url('/buttonglow.png')",
-                backgroundSize: "100% 100%",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
+              className={`relative px-14 py-2 ${
+                stones.some((stone) => stone.selected)
+                  ? "bg-activated-button"
+                  : "bg-button-glow"
+              } bg-full bg-center bg-no-repeat`}
               onClick={handleStake}
             >
               STAKE
@@ -157,15 +160,11 @@ export default function Home() {
           {/* Highest Stone */}
           {highestStone && (
             <div
-              className="w-[404px] h-[404px] flex-shrink-0 relative"
-              style={{
-                backgroundImage: highestStone.selected
-                  ? `url('/Smoke.png'), url('/activeOutline.png')`
-                  : `url('/Smoke.png'), url('/Outline.png')`,
-                backgroundSize: "387px 387px, 404px 404px",
-                backgroundPosition: "center, center",
-                backgroundRepeat: "no-repeat, no-repeat",
-              }}
+              className={`w-[404px] h-[404px] flex-shrink-0 relative ${
+                highestStone.selected
+                  ? "bg-smoke-active-outline"
+                  : "bg-smoke-outline"
+              } bg-stone-lg bg-center bg-no-repeat`}
             >
               <div
                 className="h-full flex flex-col items-center justify-center"
@@ -192,18 +191,12 @@ export default function Home() {
                 <div
                   key={stone.id}
                   className={`relative w-[188px] h-[188px] ${
+                    stone.selected
+                      ? "bg-smoke-active-outline"
+                      : "bg-smoke-outline1"
+                  } bg-stone-sm bg-center bg-no-repeat ${
                     stone.selected ? "selected" : ""
                   }`}
-                  style={{
-                    backgroundImage: stone.selected
-                      ? `url('/Smoke.png'), url('/activeOutline.png')`
-                      : `url('/Smoke.png'), url('/Outline1.png')`,
-                    backgroundSize: stone.selected
-                      ? "180px 180px, 188px 188px"
-                      : "180px 180px, 188px 188px",
-                    backgroundPosition: "center, center",
-                    backgroundRepeat: "no-repeat, no-repeat",
-                  }}
                   onClick={() => handleSelectStone(stone.id)}
                 >
                   <Image

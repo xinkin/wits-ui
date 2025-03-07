@@ -36,21 +36,7 @@ export default function RootLayout({
           background: "var(--dark-bg)",
         }}
       >
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundImage: "url(/stars-bg.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "repeat",
-            opacity: 0.5,
-            zIndex: 0,
-          }}
-        />
+        <div className="fixed top-0 left-0 w-full h-full bg-stars-bg bg-cover bg-center bg-no-repeat opacity-50 z-0" />
         <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
       </body>
     </html>
