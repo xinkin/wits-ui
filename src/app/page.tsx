@@ -140,7 +140,7 @@ export default function Home() {
                 prevStones.map((stone) => ({
                   ...stone,
                   staked: stone.selected ? true : stone.staked,
-                  // locked: stone.selected ? Math.random() > 0.5 : stone.locked,
+                  locked: stone.selected ? Math.random() > 0.5 : stone.locked,
                   selected: false,
                 })),
               );

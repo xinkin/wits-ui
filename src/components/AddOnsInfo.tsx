@@ -7,7 +7,7 @@ interface AddOnsInfoProps {
 const AddOnsInfo: React.FC<AddOnsInfoProps> = ({ className = "" }) => {
   return (
     <div
-      className={`w-full max-w-[840px] h-[130px]mx-auto rounded border border-gray-700 bg-[#0a090f]/80 p-6 ${className}`}
+      className={`w-full max-w-[840px] h-[130px]mx-auto rounded border border-grey bg-dark_purple p-6 ${className}`}
     >
       <h3 className="text-center text-gold text-base font-beaufort mb-[14px]">
         ADDITIONAL STONE STAKED ADDS (MAX = 30X)

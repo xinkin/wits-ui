@@ -18,7 +18,7 @@ export default {
         offwhite: "#FFFCF2",
         grey: "#4D4D4D",
         gold_dark: "#C0883A",
-        dark_purple: "#08080A",
+        dark_purple: "#08060A",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
