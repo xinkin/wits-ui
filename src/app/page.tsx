@@ -112,6 +112,8 @@ export default function Home() {
               prevStones.map((stone) => ({
                 ...stone,
                 staked: stone.selected ? true : stone.staked,
+                // Randomly set locked status for testing (approximately 50% chance)
+                locked: stone.selected ? Math.random() > 0.5 : stone.locked,
                 selected: false, // Deselect all stones
               })),
             );

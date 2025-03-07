@@ -4,6 +4,7 @@ export interface Stone {
   imgSrc: string;
   staked: boolean;
   selected?: boolean;
+  locked?: boolean;
   tier: "highest" | "epic" | "rare" | "common";
 }
 

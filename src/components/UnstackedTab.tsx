@@ -43,7 +43,7 @@ const UnstackedTab = ({
 
       {/* Other Stones */}
       <div className="flex-1 h-[404px] overflow-scroll pr-4 custom-scrollbar">
-        <div className="grid grid-cols-4 gap-7">
+        <div className="grid grid-cols-4 gap-7 justify-center items-center">
           {otherStones.map((stone) => (
             <div
               key={stone.id}
