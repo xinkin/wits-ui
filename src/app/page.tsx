@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import { Stone } from "../types";
 import "./globals.css";
 import { CircleX } from "lucide-react";
 import { stonesList } from "@/constants";
 import SeperatorSVG from "../../public/svgs/seperator.svg";
 import StakingModal from "@/components/Modal";
+import UnstackedTab from "@/components/UnstackedTab";
+import StackedTab from "@/components/StackedTab";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
@@ -21,6 +23,9 @@ export default function Home() {
     })),
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"unstacked" | "staked">(
+    "unstacked",
+  );
 
   const areAllStonesSelected = (): boolean => {
     return stones.every((stone) => stone.selected);
@@ -60,10 +65,6 @@ export default function Home() {
       })),
     );
   };
-
-  const highestStone = stones.find((stone) => stone.tier === "highest");
-
-  const otherStones = stones.filter((stone) => stone.tier !== "highest");
 
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">
@@ -129,88 +130,79 @@ export default function Home() {
         {/* Status and Actions */}
         <div className="flex justify-between items-center">
           <div className="text-2xl flex items-center">
-            <span className="text-gold_dark">UNSTAKED {unstakedCount}</span>
+            <span
+              className={`cursor-pointer ${
+                activeTab === "unstacked" ? "text-gold_dark" : "text-grey"
+              }`}
+              onClick={() => setActiveTab("unstacked")}
+            >
+              UNSTAKED {unstakedCount}
+            </span>
             <span className="mx-3">
               <SeperatorSVG />
             </span>
-            <span className="text-grey">STAKED {stakedCount}</span>
+            <span
+              className={`cursor-pointer ${
+                activeTab === "staked" ? "text-gold_dark" : "text-grey"
+              }`}
+              onClick={() => setActiveTab("staked")}
+            >
+              STAKED {stakedCount}
+            </span>
           </div>
 
           <div className="flex gap-6 text-light_gold text-sm">
-            <button onClick={handleSelectAll}>
-              {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
-            </button>
-            <button
-              className={`relative px-14 py-2 ${
-                stones.some((stone) => stone.selected)
-                  ? "bg-activated-button"
-                  : "bg-button-glow"
-              } bg-full bg-center bg-no-repeat`}
-              onClick={handleStake}
-            >
-              STAKE
-            </button>
+            {activeTab === "unstacked" && (
+              <>
+                <button onClick={handleSelectAll}>
+                  {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
+                </button>
+                <button
+                  className={`relative px-14 py-2 ${
+                    stones.some((stone) => stone.selected)
+                      ? "bg-activated-button"
+                      : "bg-button-glow"
+                  } bg-full bg-center bg-no-repeat`}
+                  onClick={handleStake}
+                >
+                  STAKE
+                </button>
+              </>
+            )}
+            {activeTab === "staked" && (
+              <>
+                <button onClick={handleSelectAll}>
+                  {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
+                </button>
+                <button
+                  className={`relative px-14 py-2 ${
+                    stones.some((stone) => stone.selected)
+                      ? "bg-activated-button"
+                      : "bg-button-glow"
+                  } bg-full bg-center bg-no-repeat`}
+                  onClick={handleStake}
+                >
+                  UNSTAKE
+                </button>
+              </>
+            )}
           </div>
         </div>
 
         <div className="h-px w-full bg-gold_dark mt-3 mb-14"></div>
 
-        {/* Stone Grid */}
-        <div className="flex gap-6">
-          {/* Highest Stone */}
-          {highestStone && (
-            <div
-              className={`w-[404px] h-[404px] flex-shrink-0 relative ${
-                highestStone.selected
-                  ? "bg-smoke-active-outline"
-                  : "bg-smoke-outline"
-              } bg-stone-lg bg-center bg-no-repeat`}
-            >
-              <div
-                className="h-full flex flex-col items-center justify-center"
-                onClick={() => handleSelectStone(highestStone.id)}
-              >
-                <Image
-                  src={highestStone.imgSrc}
-                  alt="Highest Stone"
-                  width={330}
-                  height={330}
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                />
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center text-xs text-grey">
-                  YOUR HIGHEST STONE
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Other Stones */}
-          <div className="flex-1 h-[404px] overflow-scroll pr-4 custom-scrollbar">
-            <div className="grid grid-cols-4 gap-7">
-              {otherStones.map((stone) => (
-                <div
-                  key={stone.id}
-                  className={`relative w-[188px] h-[188px] ${
-                    stone.selected
-                      ? "bg-smoke-active-outline"
-                      : "bg-smoke-outline1"
-                  } bg-stone-sm bg-center bg-no-repeat ${
-                    stone.selected ? "selected" : ""
-                  }`}
-                  onClick={() => handleSelectStone(stone.id)}
-                >
-                  <Image
-                    src={stone.imgSrc}
-                    alt={`Stone ${stone.id}`}
-                    width={124}
-                    height={124}
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Tab Content */}
+        {activeTab === "unstacked" ? (
+          <UnstackedTab
+            stones={stones.filter((stone) => !stone.staked)}
+            handleSelectStone={handleSelectStone}
+          />
+        ) : (
+          <StackedTab
+            stones={stones.filter((stone) => stone.staked)}
+            // handleSelectStone={handleSelectStone}
+          />
+        )}
       </div>
     </main>
   );

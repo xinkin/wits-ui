@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import StrokeSVG from "../../public/svgs/Stroke.svg";
 import { Stone } from "@/types";
-import StoneDisplay from "@/components/StoneDisplay";
+import StoneDisplay from "@/components/StoneDisplaySmall";
 import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
 import ModalCarousel from "@/components/ModalCarousel";
 
