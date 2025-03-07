@@ -7,11 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import Image from "next/image";
 import StrokeSVG from "../../public/svgs/Stroke.svg";
 import { Stone } from "@/types";
 import StoneDisplay from "@/components/StoneDisplay";
 import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
+import ModalCarousel from "@/components/ModalCarousel";
 
 interface StakingModalProps {
   isOpen: boolean;
@@ -38,15 +38,10 @@ export default function StakingModal({
           </DialogTitle>
           <StrokeSVG />
 
-          <div className="flex gap-6 mt-11">
-            {selectedStones.map((stone) => (
-              <StoneDisplay
-                key={stone.id}
-                stoneSrc={stone.imgSrc}
-                stoneAlt={`Stone ${stone.id}`}
-              />
-            ))}
-          </div>
+          <ModalCarousel
+            selectedStones={selectedStones}
+            StoneDisplay={StoneDisplay}
+          />
 
           {/* Stake Button */}
           <button
