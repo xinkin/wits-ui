@@ -5,6 +5,7 @@ import StoneDisplaySmall from "./StoneDisplaySmall";
 import { Stone } from "@/types";
 import { CirclePlus } from "lucide-react";
 import LockIcon from "../../public/svgs/LockIcon.svg";
+import GBagIcon from "../../public/svgs/GBag.svg";
 
 interface StackedTabProps {
   stones: Stone[];
@@ -25,7 +26,7 @@ const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
   const rightStones = [otherStones[2] || null, otherStones[3] || null];
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center relative">
       {/* Left side stones */}
       <div className="flex gap-4">
         {leftStones.map((stone, index) =>
@@ -118,6 +119,9 @@ const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
             </div>
           ),
         )}
+      </div>
+      <div className="absolute bottom-[-10px] right-[-10px]">
+        <GBagIcon />
       </div>
     </div>
   );

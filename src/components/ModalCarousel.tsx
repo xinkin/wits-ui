@@ -40,7 +40,48 @@ export function ModalCarousel({
     api?.scrollNext();
   }, [api]);
 
-  // Update scroll buttons visibility when the carousel state changes
+  const getCarouselOpts = () => {
+    const itemCount = selectedStones.length;
+
+    if (itemCount === 1) {
+      return {
+        align: "center" as const,
+        loop: false,
+        skipSnaps: false,
+        dragFree: false,
+        containScroll: "trimSnaps" as const,
+      };
+    } else if (itemCount === 2) {
+      return {
+        align: "center" as const,
+        loop: false,
+        skipSnaps: false,
+        dragFree: false,
+        containScroll: "trimSnaps" as const,
+      };
+    } else {
+      return {
+        align: "center" as const,
+        loop: false,
+        skipSnaps: false,
+        dragFree: false,
+        containScroll: "trimSnaps" as const,
+      };
+    }
+  };
+
+  const getItemClassName = () => {
+    const itemCount = selectedStones.length;
+
+    if (itemCount === 1) {
+      return "pl-0 basis-full flex justify-center items-center";
+    } else if (itemCount === 2) {
+      return "pl-4 basis-1/2 flex justify-center items-center";
+    } else {
+      return "pl-4 basis-1/3 flex justify-center items-center";
+    }
+  };
+
   React.useEffect(() => {
     if (!api) return;
 
@@ -52,7 +93,6 @@ export function ModalCarousel({
     api.on("select", onSelect);
     api.on("reInit", onSelect);
 
-    // Initial check
     onSelect();
 
     return () => {
@@ -61,25 +101,19 @@ export function ModalCarousel({
     };
   }, [api]);
 
+  const contentClassName =
+    selectedStones.length <= 2 ? "mr-5 ml-2 flex justify-center" : "mr-5 ml-2";
+
   return (
     <div className="mt-11">
       <Carousel
         className="w-full max-w-[700px]"
         setApi={setApi}
-        opts={{
-          align: "center",
-          loop: false,
-          skipSnaps: false,
-          dragFree: false,
-          containScroll: "trimSnaps",
-        }}
+        opts={getCarouselOpts()}
       >
-        <CarouselContent className="mr-5 ml-2">
+        <CarouselContent className={contentClassName}>
           {selectedStones.map((stone) => (
-            <CarouselItem
-              key={stone.id}
-              className="pl-4 basis-1/3 flex justify-center"
-            >
+            <CarouselItem key={stone.id} className={getItemClassName()}>
               <StoneDisplay
                 stoneSrc={stone.imgSrc}
                 stoneAlt={`Stone ${stone.id}`}
