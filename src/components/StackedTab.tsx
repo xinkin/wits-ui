@@ -9,9 +9,13 @@ import GBagIcon from "../../public/svgs/GBag.svg";
 
 interface StackedTabProps {
   stones: Stone[];
+  handleSelectStone?: (stoneId: number) => void;
 }
 
-const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
+const StackedTab: React.FC<StackedTabProps> = ({
+  stones,
+  handleSelectStone,
+}) => {
   const sortedStones =
     stones && stones.length > 0
       ? [...stones].sort((a, b) => {
@@ -31,10 +35,19 @@ const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
       <div className="flex gap-4">
         {leftStones.map((stone, index) =>
           stone ? (
-            <div key={stone.id} className="relative">
+            <div
+              key={stone.id}
+              className="relative"
+              onClick={() =>
+                stone && !stone.locked && handleSelectStone
+                  ? handleSelectStone(stone.id)
+                  : undefined
+              }
+            >
               <StoneDisplaySmall
                 stoneSrc={stone.imgSrc}
                 stoneAlt={`Stone ${stone.id}`}
+                selected={stone.selected}
               />
               {stone.locked && (
                 <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2">
@@ -62,10 +75,19 @@ const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
       {/* Center stone (highest tier) */}
       <div className="mx-4">
         {highestStone ? (
-          <div className="relative">
+          <div
+            className="relative"
+            onClick={() =>
+              highestStone && !highestStone.locked && handleSelectStone
+                ? handleSelectStone(highestStone.id)
+                : undefined
+            }
+          >
             <StoneDisplayLarge
               stoneSrc={highestStone.imgSrc}
               stoneAlt={`Stone ${highestStone.id}`}
+              selected={highestStone.selected}
+              cardTitle="top"
             />
             {highestStone.locked && (
               <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2">
@@ -93,10 +115,19 @@ const StackedTab: React.FC<StackedTabProps> = ({ stones }) => {
       <div className="flex gap-4">
         {rightStones.map((stone, index) =>
           stone ? (
-            <div key={stone.id} className="relative">
+            <div
+              key={stone.id}
+              className="relative"
+              onClick={() =>
+                stone && !stone.locked && handleSelectStone
+                  ? handleSelectStone(stone.id)
+                  : undefined
+              }
+            >
               <StoneDisplaySmall
                 stoneSrc={stone.imgSrc}
                 stoneAlt={`Stone ${stone.id}`}
+                selected={stone.selected}
               />
               {stone.locked && (
                 <div className="absolute bottom-[-16px] left-1/2 transform -translate-x-1/2">

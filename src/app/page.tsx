@@ -204,7 +204,7 @@ export default function Home() {
         ) : (
           <StackedTab
             stones={stones.filter((stone) => stone.staked)}
-            // handleSelectStone={handleSelectStone}
+            handleSelectStone={handleSelectStone}
           />
         )}
       </div>

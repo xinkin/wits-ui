@@ -5,14 +5,20 @@ interface StoneDisplayProps {
   stoneAlt?: string;
   width?: number;
   height?: number;
+  selected?: boolean;
 }
 
 export default function StoneDisplaySmall({
   stoneSrc,
   stoneAlt = "Stone",
+  selected = false,
 }: StoneDisplayProps) {
   return (
-    <div className="w-[188px] h-[188px] flex-shrink-0 relative bg-smoke-outline1 bg-stone-sm bg-center bg-no-repeat">
+    <div
+      className={`relative w-[188px] h-[188px] ${
+        selected ? "bg-smoke-active-outline" : "bg-smoke-outline1"
+      } bg-stone-sm bg-center bg-no-repeat ${selected ? "selected" : ""}`}
+    >
       <div className="h-full flex flex-col items-center justify-center">
         <Image
           src={stoneSrc}
