@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import StoneDisplayLarge from "./StoneDisplayLarge";
 import StoneDisplaySmall from "./StoneDisplaySmall";
 import { Stone } from "@/types";
 import { CirclePlus } from "lucide-react";
 import LockIcon from "../../public/svgs/LockIcon.svg";
 import GBagIcon from "../../public/svgs/GBag.svg";
+import AdditionalStonesModal from "./AdditionalStonesModal";
 
 interface StackedTabProps {
   stones: Stone[];
@@ -16,6 +17,13 @@ const StackedTab: React.FC<StackedTabProps> = ({
   stones,
   handleSelectStone,
 }) => {
+  const [isAdditionalStonesModalOpen, setIsAdditionalStonesModalOpen] =
+    useState(false);
+
+  const handleAdditionalStones = () => {
+    setIsAdditionalStonesModalOpen(true);
+  };
+
   const sortedStones =
     stones && stones.length > 0
       ? [...stones].sort((a, b) => {
@@ -29,8 +37,18 @@ const StackedTab: React.FC<StackedTabProps> = ({
   const leftStones = [otherStones[0] || null, otherStones[1] || null];
   const rightStones = [otherStones[2] || null, otherStones[3] || null];
 
+  // Create an array of additional stones (stones beyond the first 5)
+  const additionalStones = sortedStones.slice(5);
+
   return (
     <div className="flex justify-center items-center relative">
+      <AdditionalStonesModal
+        isOpen={isAdditionalStonesModalOpen}
+        setIsOpen={setIsAdditionalStonesModalOpen}
+        additionalStones={additionalStones}
+        onConfirm={() => setIsAdditionalStonesModalOpen(false)}
+      />
+
       {/* Left side stones */}
       <div className="flex gap-4">
         {leftStones.map((stone, index) =>
@@ -151,7 +169,10 @@ const StackedTab: React.FC<StackedTabProps> = ({
           ),
         )}
       </div>
-      <div className="absolute bottom-[-10px] right-[-10px]">
+      <div
+        className="absolute bottom-[-10px] right-[-10px] cursor-pointer"
+        onClick={handleAdditionalStones}
+      >
         <GBagIcon />
       </div>
     </div>

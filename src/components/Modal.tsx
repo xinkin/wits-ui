@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import {
   Dialog,
@@ -7,11 +6,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import StrokeSVG from "../../public/svgs/Stroke.svg";
 import { Stone } from "@/types";
-import StoneDisplay from "@/components/StoneDisplaySmall";
+import StoneDisplaySmall from "@/components/StoneDisplaySmall";
 import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
 import ModalCarousel from "@/components/ModalCarousel";
+import GradientLine from "@/components/Stroke";
 
 interface StakingModalProps {
   isOpen: boolean;
@@ -40,11 +39,11 @@ export default function StakingModal({
               ? "CONFIRM YOUR STAKING"
               : "CONFIRM YOUR UNSTAKING"}
           </DialogTitle>
-          <StrokeSVG />
+          <GradientLine width="w-[564px]" height="h-[1px]" />
 
           <ModalCarousel
             selectedStones={selectedStones}
-            StoneDisplay={StoneDisplay}
+            StoneDisplaySmall={StoneDisplaySmall}
           />
 
           {/* Stake Button */}

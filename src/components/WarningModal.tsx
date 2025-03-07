@@ -5,8 +5,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import StrokeSVG from "../../public/svgs/Stroke.svg";
 import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
+import GradientLine from "@/components/Stroke";
 
 interface WarningModalProps {
   isOpen: boolean;
@@ -30,9 +30,10 @@ export default function WarningModal({
             <DialogTitle className="text-[36px] text-center text-gold tracking-wider mb-4">
               WARNING
             </DialogTitle>
-            <StrokeSVG />
 
-            <div className="text-center text-offwhite text-base mt-10">
+            <GradientLine width="w-[564px]" height="h-[1px]" />
+
+            <div className="text-center text-offwhite text-base font-lato mt-10">
               If you unstake the highest stone during the season you will LOSE
               earned
               <br />

@@ -16,9 +16,6 @@ export default function StoneDisplayLarge({
   selected = false,
   cardTitle = "bottom",
 }: StoneDisplayProps) {
-  console.log(cardTitle);
-  console.log(selected);
-
   return (
     <div
       className={cn(

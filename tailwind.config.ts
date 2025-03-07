@@ -72,6 +72,7 @@ export default {
         // Main background images
         "stars-bg": "url('/imgs/stars-bg.png')",
         "modal-bg": "url('/imgs/modal-bg.png')",
+        "promptCard-bg": "url('/imgs/promptCard.png')",
         smoke: "url('/imgs/Smoke.png')",
 
         // Button images
