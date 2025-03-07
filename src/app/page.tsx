@@ -9,6 +9,7 @@ import SeperatorSVG from "../../public/svgs/seperator.svg";
 import StakingModal from "@/components/Modal";
 import UnstackedTab from "@/components/UnstackedTab";
 import StackedTab from "@/components/StackedTab";
+import WarningModal from "@/components/WarningModal";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
@@ -23,6 +24,7 @@ export default function Home() {
     })),
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"unstacked" | "staked">(
     "unstacked",
   );
@@ -59,7 +61,10 @@ export default function Home() {
   const handleUnstake = (): void => {
     const selectedStones = stones.filter((stone) => stone.selected);
     if (selectedStones.length === 0) return;
-
+    if (selectedStones.some((stone) => stone.tier === "highest")) {
+      setIsWarningModalOpen(true);
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -111,6 +116,15 @@ export default function Home() {
           </div>
         </div>
 
+        <WarningModal
+          isOpen={isWarningModalOpen}
+          setIsOpen={setIsWarningModalOpen}
+          onConfirm={() => {
+            setIsWarningModalOpen(false);
+            setIsModalOpen(true);
+          }}
+        />
+
         <StakingModal
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
@@ -126,7 +140,7 @@ export default function Home() {
                 prevStones.map((stone) => ({
                   ...stone,
                   staked: stone.selected ? true : stone.staked,
-                  locked: stone.selected ? Math.random() > 0.5 : stone.locked,
+                  // locked: stone.selected ? Math.random() > 0.5 : stone.locked,
                   selected: false,
                 })),
               );
