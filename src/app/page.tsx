@@ -5,7 +5,7 @@ import { Stone } from "../types";
 import "./globals.css";
 import { CircleX } from "lucide-react";
 import { stonesList } from "@/constants";
-import SeperatorSVG from "../../public/seperator.svg";
+import SeperatorSVG from "../../public/svgs/seperator.svg";
 import StakingModal from "@/components/Modal";
 
 export default function Home() {

@@ -7,10 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import Image from "next/image";
-import StrokeSVG from "../../public/Stroke.svg";
+// import Image from "next/image";
+import StrokeSVG from "../../public/svgs/Stroke.svg";
 import { Stone } from "@/types";
 import StoneDisplay from "@/components/StoneDisplay";
+import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
 
 interface StakingModalProps {
   isOpen: boolean;
@@ -56,13 +57,7 @@ export default function StakingModal({
           </button>
 
           <DialogTrigger asChild>
-            <Image
-              src="/ExitButtonModal.png"
-              alt="Close"
-              width={38}
-              height={38}
-              className="absolute bottom-[-19px] cursor-pointer"
-            />
+            <ExitButtonSVG className="absolute bottom-[-19px] cursor-pointer" />
           </DialogTrigger>
         </div>
       </DialogContent>

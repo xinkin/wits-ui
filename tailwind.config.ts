@@ -70,34 +70,35 @@ export default {
       },
       backgroundImage: {
         // Main background images
-        "stars-bg": "url('/stars-bg.png')",
-        "modal-bg": "url('/modal-bg.png')",
-        "smoke": "url('/Smoke.png')",
+        "stars-bg": "url('/imgs/stars-bg.png')",
+        "modal-bg": "url('/imgs/modal-bg.png')",
+        smoke: "url('/imgs/Smoke.png')",
 
         // Button images
-        "button-glow": "url('/buttonglow.png')",
-        "activated-button": "url('/activatedButton.png')",
+        "button-glow": "url('/imgs/buttonglow.png')",
+        "activated-button": "url('/imgs/activatedButton.png')",
 
         // Outline images
-        "outline": "url('/Outline.png')",
-        "outline1": "url('/Outline1.png')",
-        "active-outline": "url('/activeOutline.png')",
+        outline: "url('/imgs/Outline.png')",
+        outline1: "url('/imgs/Outline1.png')",
+        "active-outline": "url('/imgs/activeOutline.png')",
 
         // Stone images
-        "eye-stone": "url('/stones/eye-stone.png')",
-        "genesis-stone-3x": "url('/stones/GenesisStone3x.png')",
-        "genesis-stone-5x": "url('/stones/GenesisStone5x.png')",
-        "genesis-stone-7x": "url('/stones/GenesisStone7x.png')",
-        "genesis-stone-10x": "url('/stones/GenesisStone10x.png')",
-        "genesis-stone-15x": "url('/stones/GenesisStone15x.png')",
+        "eye-stone": "url('/imgs/stones/eye-stone.png')",
+        "genesis-stone-3x": "url('/imgs/stones/GenesisStone3x.png')",
+        "genesis-stone-5x": "url('/imgs/stones/GenesisStone5x.png')",
+        "genesis-stone-7x": "url('/imgs/stones/GenesisStone7x.png')",
+        "genesis-stone-10x": "url('/imgs/stones/GenesisStone10x.png')",
+        "genesis-stone-15x": "url('/imgs/stones/GenesisStone15x.png')",
 
         // Combined backgrounds
-        "smoke-outline": "url('/Smoke.png'), url('/Outline.png')",
-        "smoke-outline1": "url('/Smoke.png'), url('/Outline1.png')",
-        "smoke-active-outline": "url('/Smoke.png'), url('/activeOutline.png')",
+        "smoke-outline": "url('/imgs/Smoke.png'), url('/imgs/Outline.png')",
+        "smoke-outline1": "url('/imgs/Smoke.png'), url('/imgs/Outline1.png')",
+        "smoke-active-outline":
+          "url('/imgs/Smoke.png'), url('/imgs/activeOutline.png')",
       },
       backgroundSize: {
-        "full": "100% 100%",
+        full: "100% 100%",
         "stone-lg": "387px 387px, 404px 404px",
         "stone-sm": "180px 180px, 188px 188px",
       },
