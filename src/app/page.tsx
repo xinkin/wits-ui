@@ -71,7 +71,9 @@ export default function Home() {
       <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <div className="text-light_gold">CONNECT WALLET</div>
+          <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark">
+            CONNECT WALLET
+          </div>
           <div className="items-center cursor-pointer">
             <CircleX size={38} color="#C0883A" strokeWidth={0.75} />
           </div>
