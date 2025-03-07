@@ -56,6 +56,13 @@ export default function Home() {
     // We'll keep the selected stones in their selected state until confirmed
   };
 
+  const handleUnstake = (): void => {
+    const selectedStones = stones.filter((stone) => stone.selected);
+    if (selectedStones.length === 0) return;
+
+    setIsModalOpen(true);
+  };
+
   const handleSelectAll = (): void => {
     const allSelected = areAllStonesSelected();
     setStones((prevStones) =>
@@ -108,24 +115,40 @@ export default function Home() {
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
           selectedStones={stones.filter((stone) => stone.selected)}
+          mode={activeTab === "unstacked" ? "stake" : "unstake"}
           onConfirm={() => {
-            // Move the staking logic here
-            setStones((prevStones) =>
-              prevStones.map((stone) => ({
-                ...stone,
-                staked: stone.selected ? true : stone.staked,
-                // Randomly set locked status for testing (approximately 50% chance)
-                locked: stone.selected ? Math.random() > 0.5 : stone.locked,
-                selected: false, // Deselect all stones
-              })),
-            );
+            if (activeTab === "unstacked") {
+              const selectedCount = stones.filter(
+                (stone) => stone.selected,
+              ).length;
 
-            // Update counts
-            const selectedCount = stones.filter(
-              (stone) => stone.selected,
-            ).length;
-            setUnstakedCount((prev) => prev - selectedCount);
-            setStakedCount((prev) => prev + selectedCount);
+              setStones((prevStones) =>
+                prevStones.map((stone) => ({
+                  ...stone,
+                  staked: stone.selected ? true : stone.staked,
+                  locked: stone.selected ? Math.random() > 0.5 : stone.locked,
+                  selected: false,
+                })),
+              );
+
+              setUnstakedCount((prev) => prev - selectedCount);
+              setStakedCount((prev) => prev + selectedCount);
+            } else {
+              const selectedCount = stones.filter(
+                (stone) => stone.selected,
+              ).length;
+
+              setStones((prevStones) =>
+                prevStones.map((stone) => ({
+                  ...stone,
+                  staked: stone.selected ? false : stone.staked,
+                  selected: false,
+                })),
+              );
+
+              setUnstakedCount((prev) => prev + selectedCount);
+              setStakedCount((prev) => prev - selectedCount);
+            }
 
             setIsModalOpen(false);
           }}
@@ -184,7 +207,7 @@ export default function Home() {
                       ? "bg-activated-button"
                       : "bg-button-glow"
                   } bg-full bg-center bg-no-repeat`}
-                  onClick={handleStake}
+                  onClick={handleUnstake}
                 >
                   UNSTAKE
                 </button>

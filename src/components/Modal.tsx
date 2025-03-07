@@ -18,6 +18,7 @@ interface StakingModalProps {
   setIsOpen: (open: boolean) => void;
   selectedStones: Stone[];
   onConfirm: () => void;
+  mode: "stake" | "unstake";
 }
 
 export default function StakingModal({
@@ -25,6 +26,7 @@ export default function StakingModal({
   setIsOpen,
   selectedStones,
   onConfirm,
+  mode,
 }: StakingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -34,7 +36,9 @@ export default function StakingModal({
       >
         <div className="relative flex flex-col items-center px-5 pt-10 pb-16 h-[495px] bg-modal-bg bg-cover bg-center">
           <DialogTitle className="text-[36px] text-center text-gold tracking-wider mb-2">
-            CONFIRM YOUR STAKING
+            {mode === "stake"
+              ? "CONFIRM YOUR STAKING"
+              : "CONFIRM YOUR UNSTAKING"}
           </DialogTitle>
           <StrokeSVG />
 
@@ -48,7 +52,7 @@ export default function StakingModal({
             onClick={onConfirm}
             className="relative w-[266px] h-[44px] text-light_gold text-base mt-14 bg-activated-button bg-full bg-center bg-no-repeat"
           >
-            STAKE
+            {mode === "stake" ? "STAKE" : "UNSTAKE"}
           </button>
 
           <DialogTrigger asChild>
