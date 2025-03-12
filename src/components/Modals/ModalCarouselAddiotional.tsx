@@ -4,8 +4,8 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import ArrowNextSVG from "../../public/svgs/ArrowNext.svg";
-import ArrowPrevSVG from "../../public/svgs/ArrowPrev.svg";
+import ArrowNextSVG from "../../../public/svgs/ArrowNext.svg";
+import ArrowPrevSVG from "../../../public/svgs/ArrowPrev.svg";
 import useEmblaCarousel from "embla-carousel-react";
 
 interface Stone {
@@ -15,17 +15,22 @@ interface Stone {
 
 interface StoneDisplayProps {
   stoneSrc: string;
-  stoneAlt: string;
+  stoneAlt?: string;
+  selected?: boolean;
 }
 
 interface ModalCarouselProps {
   selectedStones: Stone[];
   StoneDisplaySmall: React.ComponentType<StoneDisplayProps>;
+  onStoneSelect?: (stoneId: string | number) => void;
+  selectedStoneId?: string | number | null;
 }
 
 export function ModalCarousel({
   selectedStones,
   StoneDisplaySmall,
+  onStoneSelect,
+  selectedStoneId = null,
 }: ModalCarouselProps) {
   const [api, setApi] =
     React.useState<ReturnType<typeof useEmblaCarousel>[1]>();
@@ -40,18 +45,17 @@ export function ModalCarousel({
     api?.scrollNext();
   }, [api]);
 
+  const handleStoneClick = (stoneId: string | number) => {
+    console.log("stoneId", stoneId);
+    if (onStoneSelect) {
+      onStoneSelect(stoneId);
+    }
+  };
+
   const getCarouselOpts = () => {
     const itemCount = selectedStones.length;
 
-    if (itemCount === 1) {
-      return {
-        align: "center" as const,
-        loop: false,
-        skipSnaps: false,
-        dragFree: false,
-        containScroll: "trimSnaps" as const,
-      };
-    } else if (itemCount === 2) {
+    if (itemCount <= 4) {
       return {
         align: "center" as const,
         loop: false,
@@ -61,7 +65,7 @@ export function ModalCarousel({
       };
     } else {
       return {
-        align: "center" as const,
+        align: "start" as const,
         loop: false,
         skipSnaps: false,
         dragFree: false,
@@ -74,11 +78,13 @@ export function ModalCarousel({
     const itemCount = selectedStones.length;
 
     if (itemCount === 1) {
-      return "pl-0 basis-full flex justify-center items-center";
+      return "basis-full flex justify-center items-center";
     } else if (itemCount === 2) {
-      return "pl-4 basis-1/2 flex justify-center items-center";
+      return "basis-1/2 flex justify-center items-center";
+    } else if (itemCount === 3) {
+      return "basis-1/3 flex justify-center items-center";
     } else {
-      return "pl-4 basis-1/3 flex justify-center items-center";
+      return "basis-1/4 flex justify-center items-center";
     }
   };
 
@@ -102,28 +108,35 @@ export function ModalCarousel({
   }, [api]);
 
   const contentClassName =
-    selectedStones.length <= 2 ? "mr-5 ml-2 flex justify-center" : "mr-5 ml-2";
+    selectedStones.length <= 4 ? "flex justify-center pl-4" : "pl-4";
 
   return (
-    <div className="mt-11">
+    <div className="mt-11 mb-11">
       <Carousel
-        className="w-full max-w-[700px]"
+        className="w-full max-w-[850px] mx-auto"
         setApi={setApi}
         opts={getCarouselOpts()}
       >
         <CarouselContent className={contentClassName}>
           {selectedStones.map((stone) => (
-            <CarouselItem key={stone.id} className={getItemClassName()}>
-              <StoneDisplaySmall
-                stoneSrc={stone.imgSrc}
-                stoneAlt={`Stone ${stone.id}`}
-              />
+            <CarouselItem
+              key={stone.id}
+              className={`${getItemClassName()} px-2`}
+              onClick={() => handleStoneClick(stone.id)}
+            >
+              <div className="cursor-pointer">
+                <StoneDisplaySmall
+                  stoneSrc={stone.imgSrc}
+                  stoneAlt={`Stone ${stone.id}`}
+                  selected={selectedStoneId === stone.id}
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
         {canScrollPrev && (
           <div
-            className="absolute h-8 w-8 rounded-full -left-12 top-1/2 -translate-y-1/2 cursor-pointer"
+            className="absolute h-8 w-8 rounded-full -left-20 top-1/2 -translate-y-1/2 cursor-pointer"
             onClick={scrollPrev}
           >
             <ArrowPrevSVG />

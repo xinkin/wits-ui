@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
+import AbstractWalletProvider from "@/components/AbstractProvider";
 
 const lato = Lato({
   weight: ["400"],
@@ -30,15 +31,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} antialiased`}
-        style={{
-          background: "var(--dark-bg)",
-        }}
-      >
-        <div className="fixed top-0 left-0 w-full h-full bg-stars-bg bg-cover bg-center bg-no-repeat opacity-50 z-0" />
-        <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
-      </body>
+      <AbstractWalletProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} antialiased`}
+          style={{
+            background: "var(--dark-bg)",
+          }}
+        >
+          <div className="fixed top-0 left-0 w-full h-full bg-stars-bg bg-cover bg-center bg-no-repeat opacity-50 z-0" />
+          <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+        </body>
+      </AbstractWalletProvider>
     </html>
   );
 }

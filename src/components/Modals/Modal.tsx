@@ -6,16 +6,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Stone } from "@/types";
+import { UnStakedStone } from "@/types";
 import StoneDisplaySmall from "@/components/StoneDisplaySmall";
-import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
-import ModalCarousel from "@/components/ModalCarousel";
-import GradientLine from "@/components/Stroke";
+import ExitButtonSVG from "../../../public/svgs/ExitButton.svg";
+import ModalCarousel from "@/components/Modals/ModalCarousel";
+import GradientLine from "@/components/ui/Stroke";
 
 interface StakingModalProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  selectedStones: Stone[];
+  selectedStones: UnStakedStone[];
   onConfirm: () => void;
   mode: "stake" | "unstake";
 }

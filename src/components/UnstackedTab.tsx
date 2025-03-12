@@ -1,27 +1,33 @@
 import React from "react";
-import { Stone } from "@/types";
+import { UnStakedStone } from "@/types";
 import StoneDisplayLarge from "./StoneDisplayLarge";
 import StoneDisplaySmall from "./StoneDisplaySmall";
+import { getHighestTierStone } from "@/lib/helper";
 
 const UnstackedTab = ({
   stones,
   handleSelectStone,
 }: {
-  stones: Stone[];
+  stones: UnStakedStone[];
   handleSelectStone: (id: number) => void;
 }) => {
-  const highestStone = stones.find((stone) => stone.tier === "highest");
+  // Find the highest tier stone based on the priority
+  const highestTierStone = getHighestTierStone(stones);
 
-  const otherStones = stones.filter((stone) => stone.tier !== "highest");
+  // Filter out the highest tier stone from other stones
+  const otherStones = highestTierStone
+    ? stones.filter((stone) => stone.id !== highestTierStone.id)
+    : [];
+
   return stones.length > 0 ? (
     <div className="flex gap-6">
-      {/* Highest Stone */}
-      {highestStone && (
-        <div onClick={() => handleSelectStone(highestStone.id)}>
+      {/* Highest Tier Stone */}
+      {highestTierStone && (
+        <div onClick={() => handleSelectStone(highestTierStone.id)}>
           <StoneDisplayLarge
-            stoneSrc={highestStone.imgSrc}
-            stoneAlt={`Stone ${highestStone.id}`}
-            selected={highestStone.selected}
+            stoneSrc={highestTierStone.imgSrc}
+            stoneAlt={`Stone ${highestTierStone.id}`}
+            selected={highestTierStone.selected}
             cardTitle="bottom"
           />
         </div>

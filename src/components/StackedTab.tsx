@@ -6,7 +6,7 @@ import { Stone } from "@/types";
 import { CirclePlus } from "lucide-react";
 import LockIcon from "../../public/svgs/LockIcon.svg";
 import GBagIcon from "../../public/svgs/GBag.svg";
-import AdditionalStonesModal from "./AdditionalStonesModal";
+import AdditionalStonesModal from "./Modals/AdditionalStonesModal";
 
 interface StackedTabProps {
   stones: Stone[];

@@ -5,8 +5,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
-import GradientLine from "@/components/Stroke";
+import ExitButtonSVG from "../../../public/svgs/ExitButton.svg";
+import GradientLine from "@/components/ui/Stroke";
 
 interface WarningModalProps {
   isOpen: boolean;

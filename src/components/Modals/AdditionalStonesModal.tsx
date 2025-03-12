@@ -6,9 +6,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Stone } from "@/types";
-import ExitButtonSVG from "../../public/svgs/ExitButton.svg";
-import ModalCarouselAdditional from "@/components/ModalCarouselAddiotional";
-import GradientLine from "@/components/Stroke";
+import ExitButtonSVG from "../../../public/svgs/ExitButton.svg";
+import ModalCarouselAdditional from "@/components/Modals/ModalCarouselAddiotional";
+import GradientLine from "@/components/ui/Stroke";
 import StoneDisplaySmall from "@/components/StoneDisplaySmall";
 import AddOnsInfo from "@/components/AddOnsInfo";
 
