@@ -69,13 +69,37 @@ export default function Home() {
   };
 
   const handleSelectAll = (): void => {
-    const allSelected = areAllStonesSelected();
-    setStones((prevStones) =>
-      prevStones.map((stone) => ({
-        ...stone,
-        selected: !allSelected,
-      })),
-    );
+    if (activeTab === "unstacked") {
+      // For unstacked tab, keep the original behavior
+      const allSelected = areAllStonesSelected();
+      setStones((prevStones) =>
+        prevStones.map((stone) => ({
+          ...stone,
+          selected: !allSelected,
+        })),
+      );
+    } else {
+      // For staked tab, only select/deselect unlocked stones
+      const unlockedStakedStones = stones.filter(
+        (stone) => stone.staked && !stone.locked,
+      );
+      const allUnlockedSelected = unlockedStakedStones.every(
+        (stone) => stone.selected,
+      );
+
+      setStones((prevStones) =>
+        prevStones.map((stone) => {
+          // Only modify selection state for unlocked staked stones
+          if (stone.staked && !stone.locked) {
+            return {
+              ...stone,
+              selected: !allUnlockedSelected,
+            };
+          }
+          return stone;
+        }),
+      );
+    }
   };
 
   return (
@@ -83,7 +107,7 @@ export default function Home() {
       <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark">
+          <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark cursor-pointer">
             CONNECT WALLET
           </div>
           <div className="items-center cursor-pointer">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Carousel,
   CarouselContent,
@@ -15,9 +15,8 @@ interface Stone {
 
 interface StoneDisplayProps {
   stoneSrc: string;
-  stoneAlt: string;
-  isSelected?: boolean;
-  onClick?: () => void;
+  stoneAlt?: string;
+  selected?: boolean;
 }
 
 interface ModalCarouselProps {
@@ -38,16 +37,6 @@ export function ModalCarousel({
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
 
-  // Internal selected state if no external handler is provided
-  const [internalSelectedId, setInternalSelectedId] = useState<
-    string | number | null
-  >(null);
-
-  // Use either external or internal selected state
-  const currentSelectedId = onStoneSelect
-    ? selectedStoneId
-    : internalSelectedId;
-
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();
   }, [api]);
@@ -57,10 +46,9 @@ export function ModalCarousel({
   }, [api]);
 
   const handleStoneClick = (stoneId: string | number) => {
+    console.log("stoneId", stoneId);
     if (onStoneSelect) {
       onStoneSelect(stoneId);
-    } else {
-      setInternalSelectedId(stoneId === internalSelectedId ? null : stoneId);
     }
   };
 
@@ -134,13 +122,13 @@ export function ModalCarousel({
             <CarouselItem
               key={stone.id}
               className={`${getItemClassName()} px-2`}
+              onClick={() => handleStoneClick(stone.id)}
             >
               <div className="cursor-pointer">
                 <StoneDisplaySmall
                   stoneSrc={stone.imgSrc}
                   stoneAlt={`Stone ${stone.id}`}
-                  isSelected={currentSelectedId === stone.id}
-                  onClick={() => handleStoneClick(stone.id)}
+                  selected={selectedStoneId === stone.id}
                 />
               </div>
             </CarouselItem>

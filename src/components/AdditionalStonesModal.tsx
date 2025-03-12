@@ -25,6 +25,14 @@ export default function AdditionalStonesModal({
   additionalStones,
   onConfirm,
 }: AdditionalStonesModalProps) {
+  const [selectedStoneId, setSelectedStoneId] = React.useState<
+    string | number | null
+  >(null);
+
+  const handleStoneSelect = (stoneId: string | number) => {
+    setSelectedStoneId(stoneId === selectedStoneId ? null : stoneId);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
@@ -44,6 +52,8 @@ export default function AdditionalStonesModal({
           <ModalCarouselAdditional
             selectedStones={additionalStones}
             StoneDisplaySmall={StoneDisplaySmall}
+            onStoneSelect={handleStoneSelect}
+            selectedStoneId={selectedStoneId}
           />
 
           <GradientLine />
