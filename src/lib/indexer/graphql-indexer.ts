@@ -35,26 +35,60 @@ export async function fetchStones(
 
   // Unstaked Stones
   if (data.data.users.items[0].ownedNfts) {
-    for (const nft of data.data.users.items[0].ownedNfts.items) {
-      const res = await publicClient.readContract({
+    const nfts = data.data.users.items[0].ownedNfts.items;
+
+    // Prepare multicall requests for tokenURIs
+    const tokenURICalls = nfts.map(
+      (nft: { nftContractAddress: string; nftTokenId: string }) => ({
         address: nft.nftContractAddress,
         abi: erc721Abi,
         functionName: "tokenURI",
         args: [nft.nftTokenId],
-      });
-      const metadata = await fetchMetadataFromUrl(res);
-      unstakedStones.push({
-        id: nft.id,
-        tokenId: nft.nftTokenId,
-        contractAddress: nft.nftContractAddress,
-        imgSrc: metadata.image,
-        tier: metadata.attributes.find((attr) => attr.trait_type === "Rarity")
-          ?.value as "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common",
-        multiplier: metadata.attributes.find(
-          (attr) => attr.trait_type === "Multiplier",
-        )?.value as string,
-      });
-    }
+      }),
+    );
+
+    // Execute multicall
+    const tokenURIs = await publicClient.multicall({
+      contracts: tokenURICalls,
+      allowFailure: true,
+    });
+
+    // Fetch metadata in parallel
+    const metadataPromises = tokenURIs.map((result, index) => {
+      if (result.status === "success") {
+        return fetchMetadataFromUrl(result.result as string);
+      }
+      console.error(
+        `Failed to fetch tokenURI for NFT ${nfts[index].id}: ${result.error}`,
+      );
+      return null;
+    });
+
+    const metadataResults = await Promise.all(metadataPromises);
+
+    // Process results
+    nfts.forEach(
+      (
+        nft: { id: number; nftTokenId: string; nftContractAddress: string },
+        index: number,
+      ) => {
+        const metadata = metadataResults[index];
+        if (metadata) {
+          unstakedStones.push({
+            id: nft.id,
+            tokenId: nft.nftTokenId,
+            contractAddress: nft.nftContractAddress,
+            imgSrc: metadata.image,
+            tier: metadata.attributes.find(
+              (attr) => attr.trait_type === "Rarity",
+            )?.value as "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common",
+            multiplier: metadata.attributes.find(
+              (attr) => attr.trait_type === "Multiplier",
+            )?.value as string,
+          });
+        }
+      },
+    );
   }
 
   // Staked Stones
