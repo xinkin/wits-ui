@@ -14,6 +14,8 @@ import { useAbstractClient } from "@abstract-foundation/agw-react";
 import { stakeStones } from "@/contractCalls/stakeStones";
 import Header from "@/components/Header";
 import UserStats from "@/components/UserStats";
+import { useWriteContractSponsored } from "@abstract-foundation/agw-react";
+import { unstakeStones } from "@/contractCalls/unstakeStones";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,6 +24,8 @@ export default function Home() {
 
   const { address } = useAccount();
   const { data: agwClient } = useAbstractClient();
+  const { writeContractSponsored, data, error, isSuccess, isPending } =
+    useWriteContractSponsored();
 
   const {
     unstakedStones,
@@ -158,13 +162,31 @@ export default function Home() {
   ]);
 
   const handleModalConfirm = useCallback(async () => {
-    if (!agwClient) return;
+    if (activeTab === TabType.UNSTAKED) {
+      if (!agwClient) return;
 
-    const transactionHash = await stakeStones(selectedStones, agwClient);
-    console.log("Transaction hash:", transactionHash);
+      const transactionHash = await stakeStones(
+        selectedUnstakedStones,
+        agwClient,
+      );
+      console.log("Transaction hash:", transactionHash);
+    } else {
+      // Unstaking flow
+      const transactionHash = unstakeStones(
+        selectedStakedStones,
+        writeContractSponsored,
+      );
+      console.log("Transaction hash:", transactionHash);
+    }
 
     setIsModalOpen(false);
-  }, [agwClient, selectedStones]);
+  }, [
+    agwClient,
+    activeTab,
+    selectedUnstakedStones,
+    selectedStakedStones,
+    writeContractSponsored,
+  ]);
 
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">

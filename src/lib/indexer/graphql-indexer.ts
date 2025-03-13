@@ -19,7 +19,6 @@ export async function fetchStones(address: string): Promise<{
     },
     body: JSON.stringify({
       query: fetchStonesQuery,
-      // variables: { address: "0xBd8973725443bf5498EF92083502465E00f2C7C7" },
       variables: { address },
     }),
   });
@@ -150,9 +149,8 @@ export async function fetchStones(address: string): Promise<{
         if (metadata) {
           stakedStones.push({
             id: stake.id,
-            tokenId: stake.nft.tokenId,
+            tokenId: stake.contractStakeId,
             contractAddress: stake.nft.id,
-            // locked: false,
             locked: currentSeasonId <= stake.seasonId,
             selected: false,
             imgSrc: metadata.image,

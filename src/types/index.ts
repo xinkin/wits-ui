@@ -1,6 +1,3 @@
-// types/index.ts
-
-// Define tier priority order
 export const tierPriority = {
   Mythic: 1,
   Legendary: 2,
@@ -8,14 +5,6 @@ export const tierPriority = {
   Uncommon: 4,
   Common: 5,
 };
-// export interface Stone {
-//   id: number;
-//   imgSrc: string;
-//   staked: boolean;
-//   selected?: boolean;
-//   locked?: boolean;
-//   tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
-// }
 
 export interface UserStats {
   username: string;
