@@ -1,4 +1,4 @@
-import { GenesisStoneMetadata, UnStakedStone, tierPriority } from "@/types";
+import { GenesisStoneMetadata } from "@/types";
 
 export async function fetchMetadataFromUrl(
   url: string,
@@ -25,12 +25,4 @@ export async function fetchMetadataFromUrl(
     console.error(`Error fetching metadata from ${url}:`, error);
     throw error;
   }
-}
-
-export function getHighestTierStone(stones: UnStakedStone[]) {
-  return stones.reduce((highest, current) => {
-    return tierPriority[current.tier] < tierPriority[highest.tier]
-      ? current
-      : highest;
-  }, stones[0]);
 }

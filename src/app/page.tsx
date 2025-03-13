@@ -11,8 +11,8 @@ import StackedTab from "@/components/StackedTab";
 import WarningModal from "@/components/Modals/WarningModal";
 import { useLoginWithAbstract } from "@abstract-foundation/agw-react";
 import { useAccount } from "wagmi";
-import { fetchStones } from "@/lib/graphql-indexer";
-import { getHighestTierStone } from "@/lib/helper";
+import { fetchStones } from "@/lib/indexer/graphql-indexer";
+import { getHighestTierStone } from "@/lib/utils";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
@@ -313,8 +313,10 @@ export default function Home() {
 
         {/* Tab Content */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <p className="text-gold">Loading your stones...</p>
+          <div className="flex justify-center items-center h-[404px]">
+            <p className="text-gold font-beaufort text-2xl">
+              Loading your stones...
+            </p>
           </div>
         ) : activeTab === "unstacked" ? (
           <UnstackedTab

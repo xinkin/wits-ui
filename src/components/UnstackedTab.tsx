@@ -2,7 +2,7 @@ import React from "react";
 import { UnStakedStone } from "@/types";
 import StoneDisplayLarge from "./StoneDisplayLarge";
 import StoneDisplaySmall from "./StoneDisplaySmall";
-import { getHighestTierStone } from "@/lib/helper";
+import { getHighestTierStone } from "@/lib/utils";
 
 const UnstackedTab = ({
   stones,

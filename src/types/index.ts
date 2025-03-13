@@ -2,10 +2,11 @@
 
 // Define tier priority order
 export const tierPriority = {
-  Legendary: 1,
-  Epic: 2,
-  Uncommon: 3,
-  Common: 4,
+  Mythic: 1,
+  Legendary: 2,
+  Rare: 3,
+  Uncommon: 4,
+  Common: 5,
 };
 export interface Stone {
   id: number;
@@ -13,7 +14,7 @@ export interface Stone {
   staked: boolean;
   selected?: boolean;
   locked?: boolean;
-  tier: "highest" | "epic" | "rare" | "common";
+  tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
 }
 
 export interface UserStats {
@@ -27,7 +28,7 @@ export interface UnStakedStone {
   tokenId: string;
   contractAddress: string;
   imgSrc: string;
-  tier: "Legendary" | "Epic" | "Uncommon" | "Common";
+  tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
   multiplier: string;
   selected?: boolean;
 }

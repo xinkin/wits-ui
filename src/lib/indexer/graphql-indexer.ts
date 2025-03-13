@@ -1,7 +1,7 @@
 import { erc721Abi } from "viem";
-import { UnStakedStone } from "../types";
+import { UnStakedStone } from "../../types";
 import { publicClient } from "@/components/AbstractProvider";
-import { fetchMetadataFromUrl } from "./helper";
+import { fetchMetadataFromUrl } from "./getMetadata";
 // Replace this URL with your actual GraphQL endpoint
 const GRAPHQL_ENDPOINT = "http://localhost:42069/graphql";
 
@@ -12,7 +12,7 @@ export async function fetchStones(
   const query = `
 query FetchUserStones($address: String!) {
 users(where: {address: $address}) {
-   items {
+   items {  
       ownedNfts {
         items {
           nftTokenId
@@ -80,7 +80,7 @@ users(where: {address: $address}) {
         contractAddress: nft.nftContractAddress,
         imgSrc: metadata.image,
         tier: metadata.attributes.find((attr) => attr.trait_type === "Rarity")
-          ?.value as "Legendary" | "Epic" | "Uncommon" | "Common",
+          ?.value as "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common",
         multiplier: metadata.attributes.find(
           (attr) => attr.trait_type === "Multiplier",
         )?.value as string,
