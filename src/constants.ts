@@ -102,3 +102,8 @@ export const stonesList = [
     tier: "common",
   },
 ];
+
+export const GEMSTONE_STAKING_ADDRESS =
+  process.env.NEXT_PUBLIC_GEMSTONE_STAKING_ADDRESS;
+export const GEMSTONE_NFT_ADDRESS =
+  process.env.NEXT_PUBLIC_GEMSTONE_NFT_ADDRESS;

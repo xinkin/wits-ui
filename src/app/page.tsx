@@ -12,6 +12,8 @@ import { getHighestTierStone } from "@/lib/utils";
 import { useStoneManagement } from "@/hooks/useStoneManagement";
 import TabSelector from "@/components/TabSelector";
 import { TabType, StoneAction } from "@/types";
+import { useAbstractClient } from "@abstract-foundation/agw-react";
+import { stakeStones } from "@/contractCalls/stakeStones";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
@@ -22,6 +24,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>(TabType.UNSTAKED);
 
   const { address } = useAccount();
+  const { data: agwClient } = useAbstractClient();
   const { login, logout } = useLoginWithAbstract();
 
   const {
@@ -109,15 +112,11 @@ export default function Home() {
   const handleUnstake = useCallback((): void => {
     if (!hasSelectedStakedStones) return;
 
-    // Get the highest tier stone from all staked stones (not just selected ones)
     const highestTierStone = getHighestTierStone(stakedStones);
-
-    // Check if the highest tier stone is among the selected stones
     const isHighestTierStoneSelected = selectedStakedStones.some(
       (stone) => stone.id === highestTierStone.id,
     );
 
-    // Only show warning if the highest tier stone is selected
     if (isHighestTierStoneSelected) {
       setIsWarningModalOpen(true);
       return;
@@ -162,9 +161,14 @@ export default function Home() {
     setStakedStones,
   ]);
 
-  const handleModalConfirm = useCallback(() => {
+  const handleModalConfirm = useCallback(async () => {
+    if (!agwClient) return;
+
+    const transactionHash = await stakeStones(selectedStones, agwClient);
+    console.log("Transaction hash:", transactionHash);
+
     setIsModalOpen(false);
-  }, []);
+  }, [agwClient, selectedStones]);
 
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">
@@ -180,6 +184,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark cursor-pointer">
+              {/* {address} */}
               {address.slice(0, 6)}...{address.slice(-4)}
             </div>
           )}
