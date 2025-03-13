@@ -107,3 +107,5 @@ export const GEMSTONE_STAKING_ADDRESS =
   process.env.NEXT_PUBLIC_GEMSTONE_STAKING_ADDRESS;
 export const GEMSTONE_NFT_ADDRESS =
   process.env.NEXT_PUBLIC_GEMSTONE_NFT_ADDRESS;
+export const GRAPHQL_ENDPOINT =
+  process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:42069/graphql";

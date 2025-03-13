@@ -1,12 +1,10 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
 import "./globals.css";
-import { CircleX } from "lucide-react";
 import StakingModal from "@/components/Modals/Modal";
 import UnstackedTab from "@/components/UnstackedTab";
 import StackedTab from "@/components/StackedTab";
 import WarningModal from "@/components/Modals/WarningModal";
-import { useLoginWithAbstract } from "@abstract-foundation/agw-react";
 import { useAccount } from "wagmi";
 import { getHighestTierStone } from "@/lib/utils";
 import { useStoneManagement } from "@/hooks/useStoneManagement";
@@ -14,18 +12,16 @@ import TabSelector from "@/components/TabSelector";
 import { TabType, StoneAction } from "@/types";
 import { useAbstractClient } from "@abstract-foundation/agw-react";
 import { stakeStones } from "@/contractCalls/stakeStones";
+import Header from "@/components/Header";
+import UserStats from "@/components/UserStats";
 
 export default function Home() {
-  const [username] = useState<string>("USERNAME");
-  const [points] = useState<string>("0000");
-  const [multiplier] = useState<string>("0000");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>(TabType.UNSTAKED);
 
   const { address } = useAccount();
   const { data: agwClient } = useAbstractClient();
-  const { login, logout } = useLoginWithAbstract();
 
   const {
     unstakedStones,
@@ -173,50 +169,9 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">
       <div className="max-w-7xl w-full text-offwhite font-beaufort flex-col">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          {!address ? (
-            <div
-              className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark cursor-pointer"
-              onClick={login}
-            >
-              CONNECT WALLET
-            </div>
-          ) : (
-            <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark cursor-pointer">
-              {/* {address} */}
-              {address.slice(0, 6)}...{address.slice(-4)}
-            </div>
-          )}
-          <div className="items-center cursor-pointer" onClick={logout}>
-            <CircleX size={38} color="#C0883A" strokeWidth={0.75} />
-          </div>
-        </div>
+        <Header />
 
-        {/* Title */}
-        <div className="relative mb-32">
-          <h1 className="text-[36px] text-center text-gold tracking-wider">
-            SEASON 0 MULTIPLIER PAGE
-          </h1>
-          <p className="text-center text-[16px] font-lato text-offwhite">
-            Stake your Stones to Earn your Multiplier and additional Points!
-          </p>
-        </div>
-
-        {/* User Stats */}
-        <div className="bg-dark_purple rounded-md p-4 mb-8 w-[350px] border-border border-2 text-sm">
-          <p className="mb-4 text-gold">{username}</p>
-          <div className="space-y-1">
-            <div className="flex items-center text-offwhite">
-              <span>POINTS:</span>
-              <span className="text-grey_text ml-2">{points}</span>
-            </div>
-            <div className="flex items-center">
-              <span>MULTIPLIER:</span>
-              <span className="text-grey_text ml-2">{multiplier}</span>
-            </div>
-          </div>
-        </div>
+        <UserStats />
 
         <WarningModal
           isOpen={isWarningModalOpen}

@@ -3,8 +3,7 @@ import { StakedStone, UnStakedStone } from "../../types";
 import { publicClient } from "@/components/AbstractProvider";
 import { fetchMetadataFromUrl } from "./getMetadata";
 import { fetchStonesQuery } from "./queries";
-
-const GRAPHQL_ENDPOINT = "http://localhost:42069/graphql";
+import { GRAPHQL_ENDPOINT } from "@/constants";
 
 export async function fetchStones(address: string): Promise<{
   unstakedStones: UnStakedStone[];
