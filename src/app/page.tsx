@@ -1,151 +1,170 @@
 "use client";
-import { useState, useEffect } from "react";
-import { UnStakedStone } from "../types";
+import { useState, useMemo, useCallback } from "react";
 import "./globals.css";
 import { CircleX } from "lucide-react";
-import { stonesList } from "@/constants";
-import SeperatorSVG from "../../public/svgs/seperator.svg";
 import StakingModal from "@/components/Modals/Modal";
 import UnstackedTab from "@/components/UnstackedTab";
 import StackedTab from "@/components/StackedTab";
 import WarningModal from "@/components/Modals/WarningModal";
 import { useLoginWithAbstract } from "@abstract-foundation/agw-react";
 import { useAccount } from "wagmi";
-import { fetchStones } from "@/lib/indexer/graphql-indexer";
 import { getHighestTierStone } from "@/lib/utils";
+import { useStoneManagement } from "@/hooks/useStoneManagement";
+import TabSelector from "@/components/TabSelector";
+import { TabType, StoneAction } from "@/types";
 
 export default function Home() {
   const [username] = useState<string>("USERNAME");
   const [points] = useState<string>("0000");
   const [multiplier] = useState<string>("0000");
-  const [unstakedCount, setUnstakedCount] = useState<number>(0);
-  const [stakedCount, setStakedCount] = useState<number>(0);
-  const [stones, setStones] = useState<UnStakedStone[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"unstacked" | "staked">(
-    "unstacked",
-  );
+  const [activeTab, setActiveTab] = useState<TabType>(TabType.UNSTAKED);
 
   const { address } = useAccount();
   const { login, logout } = useLoginWithAbstract();
 
-  useEffect(() => {
-    const loadStones = async () => {
-      if (address) {
-        setLoading(true);
-        try {
-          const { unstakedStones, unstakedCount } = await fetchStones(address);
+  const {
+    unstakedStones,
+    stakedStones,
+    setUnstakedStones,
+    setStakedStones,
+    unstakedCount,
+    stakedCount,
+    loading,
+  } = useStoneManagement(address);
 
-          const formattedStones = unstakedStones.map(
-            (stone: UnStakedStone) => ({
-              ...stone,
-              selected: false,
-            }),
-          );
+  const selectedUnstakedStones = useMemo(
+    () => unstakedStones.filter((stone) => stone.selected),
+    [unstakedStones],
+  );
 
-          setStones(formattedStones);
+  const selectedStakedStones = useMemo(
+    () => stakedStones.filter((stone) => stone.selected),
+    [stakedStones],
+  );
 
-          // const stakedStones = formattedStones.filter((stone) => stone.staked);
-          // setStakedCount(stakedStones.length);
-          // setUnstakedCount(formattedStones.length - stakedStones.length);
-          setUnstakedCount(unstakedCount);
-          setStakedCount(0);
-        } catch (error) {
-          console.error("Error fetching stones:", error);
-          // setStones(
-          //   (stonesList as UnStakedStone[]).map((stone: UnStakedStone) => ({
-          //     ...stone,
-          //     selected: false,
-          //   })),
-          // );
-          setUnstakedCount(stonesList.length);
-          setStakedCount(0);
-        } finally {
-          setLoading(false);
-        }
+  const hasSelectedUnstakedStones = useMemo(
+    () => selectedUnstakedStones.length > 0,
+    [selectedUnstakedStones],
+  );
+
+  const hasSelectedStakedStones = useMemo(
+    () => selectedStakedStones.length > 0,
+    [selectedStakedStones],
+  );
+
+  const selectedStones = useMemo(
+    () =>
+      activeTab === TabType.UNSTAKED
+        ? selectedUnstakedStones
+        : selectedStakedStones,
+    [activeTab, selectedUnstakedStones, selectedStakedStones],
+  );
+
+  const areAllStonesSelected = useCallback((): boolean => {
+    if (activeTab === TabType.UNSTAKED) {
+      return (
+        unstakedStones.length > 0 &&
+        unstakedStones.every((stone) => stone.selected)
+      );
+    } else {
+      const unlockedStones = stakedStones.filter((stone) => !stone.locked);
+      return (
+        unlockedStones.length > 0 &&
+        unlockedStones.every((stone) => stone.selected)
+      );
+    }
+  }, [activeTab, unstakedStones, stakedStones]);
+
+  const handleSelectStone = useCallback(
+    (stoneId: number): void => {
+      if (activeTab === TabType.UNSTAKED) {
+        setUnstakedStones((prevStones) =>
+          prevStones.map((stone) => ({
+            ...stone,
+            selected: stone.id === stoneId ? !stone.selected : stone.selected,
+          })),
+        );
+      } else {
+        setStakedStones((prevStones) =>
+          prevStones.map((stone) => ({
+            ...stone,
+            selected:
+              stone.id === stoneId && !stone.locked
+                ? !stone.selected
+                : stone.selected,
+          })),
+        );
       }
-    };
+    },
+    [activeTab, setUnstakedStones, setStakedStones],
+  );
 
-    loadStones();
-  }, [address]);
-
-  const areAllStonesSelected = (): boolean => {
-    return stones.every((stone) => stone.selected);
-  };
-
-  const handleSelectStone = (stoneId: number): void => {
-    setStones((prevStones) =>
-      prevStones.map((stone) => {
-        const newSelected =
-          stone.id === stoneId ? !stone.selected : stone.selected;
-        if (stone.id === stoneId) {
-        }
-        return {
-          ...stone,
-          selected: newSelected,
-        };
-      }),
-    );
-  };
-
-  const handleStake = (): void => {
-    const selectedStones = stones.filter((stone) => stone.selected);
-    if (selectedStones.length === 0) return;
-
+  const handleStake = useCallback((): void => {
+    if (!hasSelectedUnstakedStones) return;
     setIsModalOpen(true);
+  }, [hasSelectedUnstakedStones]);
 
-    // Move the stone staking logic to after modal confirmation
-    // We'll keep the selected stones in their selected state until confirmed
-  };
+  const handleUnstake = useCallback((): void => {
+    if (!hasSelectedStakedStones) return;
 
-  const handleUnstake = (): void => {
-    const selectedStones = stones.filter((stone) => stone.selected);
-    if (selectedStones.length === 0) return;
-    if (
-      selectedStones.some(
-        (stone) => stone.tier === getHighestTierStone(selectedStones).tier,
-      )
-    ) {
+    // Get the highest tier stone from all staked stones (not just selected ones)
+    const highestTierStone = getHighestTierStone(stakedStones);
+
+    // Check if the highest tier stone is among the selected stones
+    const isHighestTierStoneSelected = selectedStakedStones.some(
+      (stone) => stone.id === highestTierStone.id,
+    );
+
+    // Only show warning if the highest tier stone is selected
+    if (isHighestTierStoneSelected) {
       setIsWarningModalOpen(true);
       return;
     }
-    setIsModalOpen(true);
-  };
 
-  const handleSelectAll = (): void => {
-    if (activeTab === "unstacked") {
-      // For unstacked tab, keep the original behavior
+    setIsModalOpen(true);
+  }, [selectedStakedStones, hasSelectedStakedStones, stakedStones]);
+
+  const handleSelectAll = useCallback((): void => {
+    if (activeTab === TabType.UNSTAKED) {
       const allSelected = areAllStonesSelected();
-      setStones((prevStones) =>
+      setUnstakedStones((prevStones) =>
         prevStones.map((stone) => ({
           ...stone,
           selected: !allSelected,
         })),
       );
     } else {
-      // // For staked tab, only select/deselect unlocked stones
-      // const unlockedStakedStones = stones.filter(
-      //   (stone) => stone.staked && !stone.locked,
-      // );
-      // const allUnlockedSelected = unlockedStakedStones.every(
-      //   (stone) => stone.selected,
-      // );
-      // setStones((prevStones) =>
-      //   prevStones.map((stone) => {
-      //     // Only modify selection state for unlocked staked stones
-      //     if (stone.staked && !stone.locked) {
-      //       return {
-      //         ...stone,
-      //         selected: !allUnlockedSelected,
-      //       };
-      //     }
-      //     return stone;
-      //   }),
-      // );
+      const unlockedStakedStones = stakedStones.filter(
+        (stone) => !stone.locked,
+      );
+      const allUnlockedSelected = unlockedStakedStones.every(
+        (stone) => stone.selected,
+      );
+      setStakedStones((prevStones) =>
+        prevStones.map((stone) => {
+          if (!stone.locked) {
+            return {
+              ...stone,
+              selected: !allUnlockedSelected,
+            };
+          }
+          return stone;
+        }),
+      );
     }
-  };
+  }, [
+    activeTab,
+    areAllStonesSelected,
+    stakedStones,
+    setUnstakedStones,
+    setStakedStones,
+  ]);
+
+  const handleModalConfirm = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   return (
     <main className="min-h-screen w-full flex justify-center items-center p-2">
@@ -161,7 +180,6 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-dark_purple bg-gradient-to-b from-[#CC913D] to-[#FCC970] px-3 py-1.5 rounded-sm border-1 border-gold_dark cursor-pointer">
-              {/* {address} */}
               {address.slice(0, 6)}...{address.slice(-4)}
             </div>
           )}
@@ -207,79 +225,33 @@ export default function Home() {
         <StakingModal
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
-          selectedStones={stones.filter((stone) => stone.selected)}
-          mode={activeTab === "unstacked" ? "stake" : "unstake"}
-          onConfirm={() => {
-            if (activeTab === "unstacked") {
-              const selectedCount = stones.filter(
-                (stone) => stone.selected,
-              ).length;
-
-              // setStones((prevStones) =>
-              //   prevStones.map((stone) => ({
-              //     ...stone,
-              //     staked: stone.selected ? true : stone.staked,
-              //     locked: stone.selected ? Math.random() > 0.5 : stone.locked,
-              //     selected: false,
-              //   })),
-              // );
-
-              setUnstakedCount((prev) => prev - selectedCount);
-              setStakedCount((prev) => prev + selectedCount);
-            } else {
-              const selectedCount = stones.filter(
-                (stone) => stone.selected,
-              ).length;
-
-              // setStones((prevStones) =>
-              //   prevStones.map((stone) => ({
-              //     ...stone,
-              //     staked: stone.selected ? false : stone.staked,
-              //     selected: false,
-              //   })),
-              // );
-
-              setUnstakedCount((prev) => prev + selectedCount);
-              setStakedCount((prev) => prev - selectedCount);
-            }
-
-            setIsModalOpen(false);
-          }}
+          selectedStones={selectedStones}
+          mode={
+            activeTab === TabType.UNSTAKED
+              ? StoneAction.STAKE
+              : StoneAction.UNSTAKE
+          }
+          onConfirm={handleModalConfirm}
         />
 
         {/* Status and Actions */}
         <div className="flex justify-between items-center">
-          <div className="text-2xl flex items-center">
-            <span
-              className={`cursor-pointer ${
-                activeTab === "unstacked" ? "text-gold_dark" : "text-grey"
-              }`}
-              onClick={() => setActiveTab("unstacked")}
-            >
-              UNSTAKED {unstakedCount}
-            </span>
-            <span className="mx-3">
-              <SeperatorSVG />
-            </span>
-            <span
-              className={`cursor-pointer ${
-                activeTab === "staked" ? "text-gold_dark" : "text-grey"
-              }`}
-              onClick={() => setActiveTab("staked")}
-            >
-              STAKED {stakedCount}
-            </span>
-          </div>
+          <TabSelector
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            unstakedCount={unstakedCount}
+            stakedCount={stakedCount}
+          />
 
           <div className="flex gap-6 text-light_gold text-sm">
-            {activeTab === "unstacked" && (
+            {activeTab === TabType.UNSTAKED && (
               <>
                 <button onClick={handleSelectAll}>
                   {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
                 </button>
                 <button
                   className={`relative px-14 py-2 ${
-                    stones.some((stone) => stone.selected)
+                    hasSelectedUnstakedStones
                       ? "bg-activated-button"
                       : "bg-button-glow"
                   } bg-full bg-center bg-no-repeat`}
@@ -289,14 +261,14 @@ export default function Home() {
                 </button>
               </>
             )}
-            {activeTab === "staked" && (
+            {activeTab === TabType.STAKED && (
               <>
                 <button onClick={handleSelectAll}>
                   {areAllStonesSelected() ? "DESELECT ALL" : "SELECT ALL"}
                 </button>
                 <button
                   className={`relative px-14 py-2 ${
-                    stones.some((stone) => stone.selected)
+                    hasSelectedStakedStones
                       ? "bg-activated-button"
                       : "bg-button-glow"
                   } bg-full bg-center bg-no-repeat`}
@@ -318,15 +290,14 @@ export default function Home() {
               Loading your stones...
             </p>
           </div>
-        ) : activeTab === "unstacked" ? (
+        ) : activeTab === TabType.UNSTAKED ? (
           <UnstackedTab
-            stones={stones}
-            // stones={stones.filter((stone) => !stone.staked)}
+            stones={unstakedStones}
             handleSelectStone={handleSelectStone}
           />
         ) : (
           <StackedTab
-            stones={stones.filter((stone) => stone.staked)}
+            stones={stakedStones}
             handleSelectStone={handleSelectStone}
           />
         )}

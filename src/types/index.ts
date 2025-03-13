@@ -8,14 +8,14 @@ export const tierPriority = {
   Uncommon: 4,
   Common: 5,
 };
-export interface Stone {
-  id: number;
-  imgSrc: string;
-  staked: boolean;
-  selected?: boolean;
-  locked?: boolean;
-  tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
-}
+// export interface Stone {
+//   id: number;
+//   imgSrc: string;
+//   staked: boolean;
+//   selected?: boolean;
+//   locked?: boolean;
+//   tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
+// }
 
 export interface UserStats {
   username: string;
@@ -33,6 +33,17 @@ export interface UnStakedStone {
   selected?: boolean;
 }
 
+export interface StakedStone {
+  id: number;
+  tokenId: string;
+  contractAddress: string;
+  imgSrc: string;
+  tier: "Mythic" | "Legendary" | "Rare" | "Uncommon" | "Common";
+  locked?: boolean;
+  multiplier: string;
+  selected?: boolean;
+}
+
 export interface GenesisStoneMetadata {
   dna: string;
   name: string;
@@ -45,4 +56,14 @@ export interface GenesisStoneMetadata {
     trait_type: string;
     value: string;
   }>;
+}
+
+export enum TabType {
+  UNSTAKED = "unstacked",
+  STAKED = "staked",
+}
+
+export enum StoneAction {
+  STAKE = "stake",
+  UNSTAKE = "unstake",
 }

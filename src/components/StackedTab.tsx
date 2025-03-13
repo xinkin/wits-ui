@@ -2,14 +2,15 @@
 import React, { useState } from "react";
 import StoneDisplayLarge from "./StoneDisplayLarge";
 import StoneDisplaySmall from "./StoneDisplaySmall";
-import { Stone } from "@/types";
+import { StakedStone } from "@/types";
 import { CirclePlus } from "lucide-react";
 import LockIcon from "../../public/svgs/LockIcon.svg";
 import GBagIcon from "../../public/svgs/GBag.svg";
 import AdditionalStonesModal from "./Modals/AdditionalStonesModal";
+import { getSortedTierStones } from "@/lib/utils";
 
 interface StackedTabProps {
-  stones: Stone[];
+  stones: StakedStone[];
   handleSelectStone?: (stoneId: number) => void;
 }
 
@@ -24,20 +25,17 @@ const StackedTab: React.FC<StackedTabProps> = ({
     setIsAdditionalStonesModalOpen(true);
   };
 
-  const sortedStones =
-    stones && stones.length > 0
-      ? [...stones].sort((a, b) => {
-          const tierPriority = { highest: 3, epic: 2, rare: 1, common: 0 };
-          return tierPriority[a.tier] > tierPriority[b.tier] ? -1 : 1;
-        })
-      : [];
-
-  const highestStone = sortedStones.length > 0 ? sortedStones[0] : null;
-  const otherStones = sortedStones.slice(1, 5);
-  const leftStones = [otherStones[0] || null, otherStones[1] || null];
-  const rightStones = [otherStones[2] || null, otherStones[3] || null];
-
-  // Create an array of additional stones (stones beyond the first 5)
+  // Sort all stones by tier priority
+  const sortedStones = getSortedTierStones(stones);
+  // Take the top 5 stones for display
+  const topFiveStones = sortedStones.slice(0, 5);
+  // The highest tier stone (first in sorted array) goes in the middle
+  const highestStone = topFiveStones.length > 0 ? topFiveStones[0] : null;
+  // The other top tier stones go on the sides
+  const otherTopStones = topFiveStones.slice(1);
+  const leftStones = [otherTopStones[0] || null, otherTopStones[1] || null];
+  const rightStones = [otherTopStones[2] || null, otherTopStones[3] || null];
+  // All remaining stones go to additional stones
   const additionalStones = sortedStones.slice(5);
 
   return (
@@ -155,7 +153,7 @@ const StackedTab: React.FC<StackedTabProps> = ({
             </div>
           ) : (
             <div
-              key={`empty-left-${index}`}
+              key={`empty-right-${index}`}
               className="w-[188px] h-[188px] flex relative bg-smoke-outline1 bg-stone-sm bg-center bg-no-repeat justify-center items-center opacity-90"
             >
               <div className="absolute w-[160px] h-[160px] rounded-full bg-[rgba(255,255,185,0.08)] blur-[25px]"></div>
