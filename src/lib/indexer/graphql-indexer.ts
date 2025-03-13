@@ -2,48 +2,20 @@ import { erc721Abi } from "viem";
 import { UnStakedStone } from "../../types";
 import { publicClient } from "@/components/AbstractProvider";
 import { fetchMetadataFromUrl } from "./getMetadata";
-// Replace this URL with your actual GraphQL endpoint
+import { fetchStonesQuery } from "./queries";
+
 const GRAPHQL_ENDPOINT = "http://localhost:42069/graphql";
 
 export async function fetchStones(
   address: string,
 ): Promise<{ unstakedStones: UnStakedStone[]; unstakedCount: number }> {
-  // Define query with proper variable declaration
-  const query = `
-query FetchUserStones($address: String!) {
-users(where: {address: $address}) {
-   items {  
-      ownedNfts {
-        items {
-          nftTokenId
-          nftContractAddress
-          id
-        }
-        totalCount
-      }
-      stakes(where: {isStaked: true}) {
-        items {
-          seasonId
-          nft {
-            tokenId
-            nftContract {
-              contract
-            }
-          }
-        }
-      }
-    }
-}
-}
-  `;
-
   const response = await fetch(GRAPHQL_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      query,
+      query: fetchStonesQuery,
       variables: { address },
     }),
   });
@@ -58,13 +30,10 @@ users(where: {address: $address}) {
     throw new Error(`GraphQL errors: ${JSON.stringify(data.errors)}`);
   }
 
-  // Extract and transform the data into Stone[] format
-  // This assumes your Stone type matches this structure
-  // You may need to adjust this based on your actual Stone type
   const unstakedStones: UnStakedStone[] = [];
   const unstakedCount = data.data.users.items[0].ownedNfts.totalCount;
 
-  // Process owned NFTs
+  // Unstaked Stones
   if (data.data.users.items[0].ownedNfts) {
     for (const nft of data.data.users.items[0].ownedNfts.items) {
       const res = await publicClient.readContract({
@@ -88,7 +57,7 @@ users(where: {address: $address}) {
     }
   }
 
-  // Process staked NFTs
+  // Staked Stones
   //   if (user.stakes?.items) {
   //     for (const stake of user.stakes.items) {
   //       stones.push({
